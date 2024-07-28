@@ -1,0 +1,11 @@
+.listing-details {
+  padding: 16px;
+  text-align: center;
+}
+
+.listing-image-large {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin-bottom: 16px;
+}

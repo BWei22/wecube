@@ -1,0 +1,13 @@
+.create-listing {
+    padding: 16px;
+  }
+  
+  .create-listing form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .create-listing input[type="file"] {
+    margin-top: 16px;
+  }
+  
