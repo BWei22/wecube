@@ -54,6 +54,7 @@ const ListingDetails = () => {
 
       if (!querySnapshot.empty) {
         // If a conversation already exists, navigate to the existing conversation
+        const conversationId = querySnapshot.docs[0].id;
         navigate(`/messages/${listingId}`);
       } else {
         // If no conversation exists, create a new one
@@ -79,15 +80,14 @@ const ListingDetails = () => {
       <p>Usage: {listing.usage}</p>
       <p>Description: {listing.description}</p>
       {listing.imageUrl && <img src={listing.imageUrl} alt={listing.name} />}
-      {auth.currentUser && auth.currentUser.uid === listing.userId ? (
+      {auth.currentUser && auth.currentUser.uid === listing.userId && (
         <Button onClick={handleDelete} variant="contained" color="secondary">
           Delete Listing
         </Button>
-      ) : (
-        <Button onClick={handleContactSeller} variant="contained" color="primary">
-          Contact the Seller
-        </Button>
       )}
+      <Button onClick={handleContactSeller} variant="contained" color="primary">
+        Contact the Seller
+      </Button>
     </div>
   );
 };

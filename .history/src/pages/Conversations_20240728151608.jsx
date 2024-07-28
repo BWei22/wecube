@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
 import { collection, query, where, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import './Conversations.css'; // Create this CSS file for styling
 
 const Conversations = () => {
   const [conversations, setConversations] = useState([]);
@@ -74,12 +73,12 @@ const Conversations = () => {
   };
 
   return (
-    <div className="conversations-container">
+    <div>
       <h2>Conversations</h2>
-      <ul className="conversations-list">
+      <ul>
         {conversations.map((convo, index) => (
-          <li key={index} className="conversation-item" onClick={() => handleConversationClick(convo.listingId)}>
-            <p className="conversation-title">{listings[convo.listingId] || convo.listingId}</p>
+          <li key={index} onClick={() => handleConversationClick(convo.listingId)}>
+            <p>Conversation for listing: {listings[convo.listingId] || convo.listingId}</p>
           </li>
         ))}
       </ul>
