@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db, auth } from '../firebaseConfig';
-import { collection, addDoc, query, where, onSnapshot, doc, getDoc, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './Message.css';
@@ -27,32 +27,36 @@ const Message = () => {
       }
     };
 
-    fetchRecipientId();
-
-    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('createdAt', 'asc'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const msgs = [];
-      const userIds = new Set();
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        msgs.push(data);
-        userIds.add(data.senderId);
-      });
-      setMessages(msgs);
-      userIds.forEach(async (userId) => {
-        if (!usernames[userId]) {
-          const userDocRef = doc(db, 'users', userId);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            setUsernames((prevUsernames) => ({
-              ...prevUsernames,
-              [userId]: userDocSnap.data().username,
-            }));
+    const fetchUsernames = async () => {
+      const q = query(collection(db, 'messages'), where('listingId', '==', listingId));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const msgs = [];
+        const userIds = new Set();
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          msgs.push(data);
+          userIds.add(data.senderId);
+        });
+        setMessages(msgs);
+        userIds.forEach(async (userId) => {
+          if (!usernames[userId]) {
+            const userDocRef = doc(db, 'users', userId);
+            const userDocSnap = await getDoc(userDocRef);
+            if (userDocSnap.exists()) {
+              setUsernames((prevUsernames) => ({
+                ...prevUsernames,
+                [userId]: userDocSnap.data().username,
+              }));
+            }
           }
-        }
+        });
+        scrollToBottom();
       });
-      scrollToBottom();
-    });
+      return unsubscribe;
+    };
+
+    fetchRecipientId();
+    const unsubscribe = fetchUsernames();
 
     return () => unsubscribe();
   }, [listingId, usernames]);
@@ -73,7 +77,7 @@ const Message = () => {
         senderId: auth.currentUser.uid,
         recipientId,
         message: newMessage,
-        createdAt: serverTimestamp(),
+        createdAt: new Date(),
       });
       setNewMessage('');
     } catch (error) {

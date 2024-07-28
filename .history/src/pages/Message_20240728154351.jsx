@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db, auth } from '../firebaseConfig';
-import { collection, addDoc, query, where, onSnapshot, doc, getDoc, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './Message.css';
@@ -29,7 +29,7 @@ const Message = () => {
 
     fetchRecipientId();
 
-    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('createdAt', 'asc'));
+    const q = query(collection(db, 'messages'), where('listingId', '==', listingId));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
@@ -73,7 +73,7 @@ const Message = () => {
         senderId: auth.currentUser.uid,
         recipientId,
         message: newMessage,
-        createdAt: serverTimestamp(),
+        createdAt: new Date(),
       });
       setNewMessage('');
     } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { db, auth } from '../firebaseConfig';
-import { collection, addDoc, query, where, onSnapshot, doc, getDoc, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, getDoc, orderBy } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './Message.css';
@@ -73,7 +73,7 @@ const Message = () => {
         senderId: auth.currentUser.uid,
         recipientId,
         message: newMessage,
-        createdAt: serverTimestamp(),
+        createdAt: new Date(),
       });
       setNewMessage('');
     } catch (error) {
