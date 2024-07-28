@@ -33,6 +33,18 @@ const Listings = () => {
     }
   };
 
+    try {
+      await addDoc(collection(db, "interests"), {
+        listingId,
+        userId: auth.currentUser.uid,
+        timestamp: new Date()
+      });
+      console.log("Interest successfully sent!");
+    } catch (error) {
+      console.error("Error sending interest:", error);
+    }
+  };
+
   const filteredListings = listings.filter(listing =>
     listing.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -75,6 +87,11 @@ const Listings = () => {
             {auth.currentUser && listing.userId === auth.currentUser.uid && (
               <Button variant="contained" color="secondary" onClick={(e) => { e.stopPropagation(); handleDelete(listing.id); }}>
                 Delete
+              </Button>
+            )}
+            {auth.currentUser && listing.userId !== auth.currentUser.uid && (
+              <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleInterest(listing.id); }}>
+                Interested
               </Button>
             )}
           </div>

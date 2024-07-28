@@ -77,6 +77,11 @@ const Listings = () => {
                 Delete
               </Button>
             )}
+            {auth.currentUser && listing.userId !== auth.currentUser.uid && (
+              <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleInterest(listing.id); }}>
+                Interested
+              </Button>
+            )}
           </div>
         ))}
       </div>
