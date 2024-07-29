@@ -30,7 +30,7 @@ const App = () => {
             <Route path="/listing/:listingId" element={<ListingDetails />} />
             <Route path="/interested-buyers/:listingId" element={<PrivateRoute><InterestedBuyers /></PrivateRoute>} />
             <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
-            <Route path="/auth" element={<AuthComponent />} />
+            <Route path="/auth" element={<AuthComponent />} /> {/* Ensure this route is defined */}
             <Route path="/messages/:listingId" element={<PrivateRoute><Message /></PrivateRoute>} />
             <Route path="/conversations" element={<PrivateRoute><Conversations /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />

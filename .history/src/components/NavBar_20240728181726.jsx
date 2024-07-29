@@ -26,7 +26,7 @@ const NavBar = () => {
             <Button onClick={handleLogout} variant="contained" color="secondary">Logout</Button>
           </>
         ) : (
-          <Button onClick={() => navigate('/auth')} variant="contained" color="primary">Login</Button>
+          <Link to="/auth">Login</Link>
         )}
       </div>
     </div>

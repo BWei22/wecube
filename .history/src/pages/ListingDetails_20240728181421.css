@@ -5,12 +5,8 @@
   background-color: #f5f5f5;
   border-radius: 10px;
   max-width: 800px;
-  margin: auto;
+  margin: 0 auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  box-sizing: border-box;
 }
 
 .listing-image {
@@ -21,7 +17,6 @@
 }
 
 .listing-info {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, deleteDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../firebaseConfig';
 import Button from '@mui/material/Button';
-import './ListingDetails.css';
+import
 
 const ListingDetails = () => {
   const { listingId } = useParams();
@@ -80,26 +80,22 @@ const ListingDetails = () => {
   }
 
   return (
-    <div className="listing-container">
+    <div>
       <h2>{listing.name}</h2>
-      {listing.imageUrl && <img src={listing.imageUrl} alt={listing.name} className="listing-image" />}
-      <div className="listing-info">
-        <p>Price: {listing.price}</p>
-        <p>Usage: {listing.usage}</p>
-        <p>Description: {listing.description}</p>
-        <p>Seller: {sellerUsername}</p>
-      </div>
-      <div className="listing-buttons">
-        {auth.currentUser && auth.currentUser.uid === listing.userId ? (
-          <Button onClick={handleDelete} variant="contained" color="secondary">
-            Delete Listing
-          </Button>
-        ) : (
-          <Button onClick={handleContactSeller} variant="contained" color="primary">
-            Contact the Seller
-          </Button>
-        )}
-      </div>
+      <p>Price: {listing.price}</p>
+      <p>Usage: {listing.usage}</p>
+      <p>Description: {listing.description}</p>
+      <p>Seller: {sellerUsername}</p>
+      {listing.imageUrl && <img src={listing.imageUrl} alt={listing.name} />}
+      {auth.currentUser && auth.currentUser.uid === listing.userId ? (
+        <Button onClick={handleDelete} variant="contained" color="secondary">
+          Delete Listing
+        </Button>
+      ) : (
+        <Button onClick={handleContactSeller} variant="contained" color="primary">
+          Contact the Seller
+        </Button>
+      )}
     </div>
   );
 };

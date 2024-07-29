@@ -1,0 +1,24 @@
+/* src/components/AuthComponent.css */
+
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  
+  .auth-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .auth-container .MuiTextField-root {
+    margin-bottom: 20px;
+  }
+  
+  .auth-container .MuiButton-root {
+    margin-top: 20px;
+  }
+  
