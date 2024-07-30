@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs } from 'firebase/firestore'; // Ensure getDocs is imported
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, orderBy } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import './Conversations.css';
-import Message from './Message';
+import Message from './Message'; // Import the Message component
 
 const Conversations = ({ onNewMessage }) => {
   const [conversations, setConversations] = useState([]);
   const [listings, setListings] = useState({});
   const [usernames, setUsernames] = useState({});
-  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [selectedConversation, setSelectedConversation] = useState(null); // State to track selected conversation
   const location = useLocation();
 
   useEffect(() => {
@@ -74,9 +74,9 @@ const Conversations = ({ onNewMessage }) => {
     }
   }, [location.search, conversations]);
 
-  const handleConversationClick = async (conversation) => {
+  const handleConversationClick = (conversation) => {
     setSelectedConversation(conversation);
-
+    // Mark messages as read
     const q = query(
       collection(db, 'messages'),
       where('listingId', '==', conversation.listingId),
@@ -84,14 +84,11 @@ const Conversations = ({ onNewMessage }) => {
       where('isRead', '==', false)
     );
 
-    const querySnapshot = await getDocs(q); // Fixed getDocs error
-    querySnapshot.forEach(async (docSnapshot) => {
-      await updateDoc(docSnapshot.ref, { isRead: true });
+    onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach(async (docSnapshot) => {
+        await updateDoc(docSnapshot.ref, { isRead: true });
+      });
     });
-
-    if (onNewMessage) {
-      onNewMessage();
-    }
   };
 
   return (

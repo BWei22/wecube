@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { db, auth } from '../firebaseConfig';
+import { db } from '../firebaseConfig'; // Remove the duplicate auth import
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';

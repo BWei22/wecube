@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc, collection, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebaseConfig';
 import Button from '@mui/material/Button';
 import './ListingDetails.css';
@@ -34,34 +34,30 @@ const ListingDetails = () => {
 
     const conversationId = `${listingId}_${auth.currentUser.uid}_${listing.userId}`;
 
-    try {
-      const conversationRef = doc(db, 'conversations', conversationId);
-      const conversationDoc = await getDoc(conversationRef);
+    const conversationRef = doc(db, 'conversations', conversationId);
+    const conversationDoc = await getDoc(conversationRef);
 
-      if (!conversationDoc.exists()) {
-        await setDoc(conversationRef, {
-          listingId,
-          participants: [auth.currentUser.uid, listing.userId],
-          createdAt: serverTimestamp(),
-          lastMessage: '',
-        });
+    if (!conversationDoc.exists()) {
+      await setDoc(conversationRef, {
+        listingId,
+        participants: [auth.currentUser.uid, listing.userId],
+        createdAt: serverTimestamp(),
+        lastMessage: '',
+      });
 
-        const initialMessage = {
-          listingId,
-          senderId: auth.currentUser.uid,
-          recipientId: listing.userId,
-          message: 'Hello, I am interested in your listing.',
-          createdAt: serverTimestamp(),
-          isRead: false,
-        };
+      const initialMessage = {
+        listingId,
+        senderId: auth.currentUser.uid,
+        recipientId: listing.userId,
+        message: 'Hello, I am interested in your listing.',
+        createdAt: serverTimestamp(),
+        isRead: false,
+      };
 
-        await setDoc(doc(collection(db, 'messages')), initialMessage);
-      }
-
-      navigate(`/conversations?selected=${conversationId}`);
-    } catch (error) {
-      console.error('Error creating conversation or message:', error);
+      await setDoc(doc(collection(db, 'messages')), initialMessage);
     }
+
+    navigate(`/conversations?selected=${conversationId}`);
   };
 
   if (!listing) {

@@ -40,23 +40,6 @@
   color: #666;
 }
 
-.conversation-preview {
-  font-size: 12px;
-  color: #999;
-}
-
-.unread .conversation-title,
-.unread .conversation-username,
-.unread .conversation-preview {
-  font-weight: bold;
-}
-
-.unread-dot {
-  color: red;
-  font-size: 20px;
-  margin-left: 5px;
-}
-
 .conversation-messages {
   flex-grow: 1;
   padding: 20px;

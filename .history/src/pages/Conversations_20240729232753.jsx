@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs } from 'firebase/firestore'; // Ensure getDocs is imported
+import { collection, query, where, onSnapshot, doc, getDoc, orderBy, limit, getDocs } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import './Conversations.css';
 import Message from './Message';
@@ -22,12 +22,22 @@ const Conversations = ({ onNewMessage }) => {
       where('participants', 'array-contains', auth.currentUser.uid)
     );
 
-    const handleSnapshot = (querySnapshot) => {
+    const handleSnapshot = async (querySnapshot) => {
       const convos = [];
-      querySnapshot.forEach((doc) => {
+      for (const doc of querySnapshot.docs) {
         const data = doc.data();
+        const lastMessageQuery = query(
+          collection(db, 'messages'),
+          where('listingId', '==', data.listingId),
+          orderBy('timestamp', 'desc'),
+          limit(1)
+        );
+        const lastMessageSnapshot = await getDocs(lastMessageQuery);
+        if (!lastMessageSnapshot.empty) {
+          data.lastMessage = lastMessageSnapshot.docs[0].data();
+        }
         convos.push({ ...data, id: doc.id });
-      });
+      }
       setConversations(convos);
     };
 
@@ -84,7 +94,7 @@ const Conversations = ({ onNewMessage }) => {
       where('isRead', '==', false)
     );
 
-    const querySnapshot = await getDocs(q); // Fixed getDocs error
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (docSnapshot) => {
       await updateDoc(docSnapshot.ref, { isRead: true });
     });

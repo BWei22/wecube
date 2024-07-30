@@ -45,9 +45,7 @@
   color: #999;
 }
 
-.unread .conversation-title,
-.unread .conversation-username,
-.unread .conversation-preview {
+.unread {
   font-weight: bold;
 }
 

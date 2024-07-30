@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, addDoc, query, where, onSnapshot, doc, getDoc, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, onSnapshot, doc, getDoc, orderBy, serverTimestamp } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './Message.css';
@@ -31,13 +31,10 @@ const Message = ({ listingId }) => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
-      querySnapshot.forEach(async (doc) => {
+      querySnapshot.forEach((doc) => {
         const data = doc.data();
         msgs.push(data);
         userIds.add(data.senderId);
-        if (data.recipientId === auth.currentUser.uid && !data.isRead) {
-          await updateDoc(doc.ref, { isRead: true });
-        }
       });
       setMessages(msgs);
       userIds.forEach(async (userId) => {
@@ -75,7 +72,6 @@ const Message = ({ listingId }) => {
         recipientId,
         message: newMessage,
         createdAt: serverTimestamp(),
-        isRead: false, // Set isRead to false for new messages
       });
       setNewMessage('');
     } catch (error) {

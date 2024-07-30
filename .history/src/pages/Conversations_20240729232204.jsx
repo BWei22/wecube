@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs } from 'firebase/firestore'; // Ensure getDocs is imported
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import './Conversations.css';
 import Message from './Message';
@@ -84,7 +84,7 @@ const Conversations = ({ onNewMessage }) => {
       where('isRead', '==', false)
     );
 
-    const querySnapshot = await getDocs(q); // Fixed getDocs error
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (docSnapshot) => {
       await updateDoc(docSnapshot.ref, { isRead: true });
     });
