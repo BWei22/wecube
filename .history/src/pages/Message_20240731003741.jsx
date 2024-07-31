@@ -54,7 +54,7 @@ const Message = ({ listingId, conversationId, recipientId }) => {
     }
 
     try {
-      const newMsg = {
+      await addDoc(collection(db, 'messages'), {
         conversationId,
         listingId,
         senderId: auth.currentUser.uid,
@@ -62,9 +62,7 @@ const Message = ({ listingId, conversationId, recipientId }) => {
         message: newMessage,
         timestamp: serverTimestamp(), // Use serverTimestamp to get the current time from Firestore server
         isRead: false, // Set isRead to false for new messages
-      };
-
-      await addDoc(collection(db, 'messages'), newMsg);
+      });
 
       // Update the lastMessage field in the conversations collection
       await updateDoc(doc(db, 'conversations', conversationId), {

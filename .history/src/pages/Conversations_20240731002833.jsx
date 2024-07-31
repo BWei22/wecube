@@ -1,9 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, addDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import './Conversations.css';
 import Message from './Message';
+
+// Function to send a message
+const sendMessage = async (conversationId, listingId, recipientId, messageText) => {
+  try {
+    await addDoc(collection(db, 'messages'), {
+      conversationId: conversationId,
+      listingId: listingId,
+      senderId: auth.currentUser.uid,
+      recipientId: recipientId,
+      message: messageText,
+      timestamp: serverTimestamp(), // Use serverTimestamp to get the current time from Firestore server
+      isRead: false,
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
+};
 
 const Conversations = ({ onNewMessage }) => {
   const [conversations, setConversations] = useState([]);
@@ -26,8 +43,6 @@ const Conversations = ({ onNewMessage }) => {
       const convos = [];
       for (const doc of querySnapshot.docs) {
         const data = doc.data();
-        console.log('Conversation data:', data);
-
         const lastMessageQuery = query(
           collection(db, 'messages'),
           where('conversationId', '==', doc.id),
@@ -36,12 +51,9 @@ const Conversations = ({ onNewMessage }) => {
         );
         const lastMessageSnapshot = await getDocs(lastMessageQuery);
         const lastMessage = lastMessageSnapshot.docs.length > 0 ? lastMessageSnapshot.docs[0].data() : null;
-        console.log(`Last message for conversation ${doc.id}:`, lastMessage);
-
         convos.push({ ...data, id: doc.id, lastMessage });
       }
       setConversations(convos);
-      console.log('Conversations state updated:', convos);
     };
 
     const unsubscribe = onSnapshot(q, handleSnapshot);
@@ -69,8 +81,6 @@ const Conversations = ({ onNewMessage }) => {
       }
       setListings(listingsMap);
       setUsernames(usernamesMap);
-      console.log('Listings state updated:', listingsMap);
-      console.log('Usernames state updated:', usernamesMap);
     };
 
     if (conversations.length > 0) {
@@ -94,12 +104,12 @@ const Conversations = ({ onNewMessage }) => {
 
     const q = query(
       collection(db, 'messages'),
-      where('conversationId', '==', conversation.id),
+      where('listingId', '==', conversation.listingId),
       where('recipientId', '==', auth.currentUser.uid),
       where('isRead', '==', false)
     );
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q); // Fixed getDocs error
     querySnapshot.forEach(async (docSnapshot) => {
       await updateDoc(docSnapshot.ref, { isRead: true });
     });
@@ -135,11 +145,7 @@ const Conversations = ({ onNewMessage }) => {
       </div>
       <div className="conversation-messages">
         {selectedConversation ? (
-          <Message 
-            listingId={selectedConversation.listingId} 
-            conversationId={selectedConversation.id} 
-            recipientId={selectedConversation.participants.find(id => id !== auth.currentUser.uid)} 
-          />
+          <Message listingId={selectedConversation.listingId} />
         ) : (
           <p>Select a conversation to view messages</p>
         )}

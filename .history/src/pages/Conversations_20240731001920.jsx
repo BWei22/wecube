@@ -26,8 +26,7 @@ const Conversations = ({ onNewMessage }) => {
       const convos = [];
       for (const doc of querySnapshot.docs) {
         const data = doc.data();
-        console.log('Conversation data:', data);
-
+        console.log(`Conversation data: ${JSON.stringify(data)}`);
         const lastMessageQuery = query(
           collection(db, 'messages'),
           where('conversationId', '==', doc.id),
@@ -36,12 +35,11 @@ const Conversations = ({ onNewMessage }) => {
         );
         const lastMessageSnapshot = await getDocs(lastMessageQuery);
         const lastMessage = lastMessageSnapshot.docs.length > 0 ? lastMessageSnapshot.docs[0].data() : null;
-        console.log(`Last message for conversation ${doc.id}:`, lastMessage);
-
+        console.log(`Last message for conversation ${doc.id}: ${JSON.stringify(lastMessage)}`);
         convos.push({ ...data, id: doc.id, lastMessage });
       }
       setConversations(convos);
-      console.log('Conversations state updated:', convos);
+      console.log(`Conversations state updated: ${JSON.stringify(convos)}`);
     };
 
     const unsubscribe = onSnapshot(q, handleSnapshot);
@@ -69,8 +67,8 @@ const Conversations = ({ onNewMessage }) => {
       }
       setListings(listingsMap);
       setUsernames(usernamesMap);
-      console.log('Listings state updated:', listingsMap);
-      console.log('Usernames state updated:', usernamesMap);
+      console.log(`Listings state updated: ${JSON.stringify(listingsMap)}`);
+      console.log(`Usernames state updated: ${JSON.stringify(usernamesMap)}`);
     };
 
     if (conversations.length > 0) {
@@ -94,7 +92,7 @@ const Conversations = ({ onNewMessage }) => {
 
     const q = query(
       collection(db, 'messages'),
-      where('conversationId', '==', conversation.id),
+      where('listingId', '==', conversation.listingId),
       where('recipientId', '==', auth.currentUser.uid),
       where('isRead', '==', false)
     );
@@ -113,8 +111,8 @@ const Conversations = ({ onNewMessage }) => {
     <div className="conversations-container">
       <div className="conversations-list">
         {conversations.map((convo, index) => {
-          const lastMessage = convo.lastMessage ? convo.lastMessage.message : '';
-          const isUnread = convo.participants.includes(auth.currentUser.uid) && convo.lastMessage && convo.lastMessage.senderId !== auth.currentUser.uid && !convo.lastMessage.isRead;
+          const lastMessage = convo.lastMessage || '';
+          const isUnread = convo.participants.includes(auth.currentUser.uid) && lastMessage.senderId !== auth.currentUser.uid && !lastMessage.isRead;
           return (
             <div
               key={index}
@@ -126,7 +124,7 @@ const Conversations = ({ onNewMessage }) => {
                 {usernames[convo.participants.find(id => id !== auth.currentUser.uid)] || 'Unknown'}
               </p>
               <p className="conversation-preview">
-                {lastMessage}
+                {lastMessage.message}
               </p>
               {isUnread && <span className="unread-dot">•</span>}
             </div>
@@ -135,11 +133,7 @@ const Conversations = ({ onNewMessage }) => {
       </div>
       <div className="conversation-messages">
         {selectedConversation ? (
-          <Message 
-            listingId={selectedConversation.listingId} 
-            conversationId={selectedConversation.id} 
-            recipientId={selectedConversation.participants.find(id => id !== auth.currentUser.uid)} 
-          />
+          <Message listingId={selectedConversation.listingId} />
         ) : (
           <p>Select a conversation to view messages</p>
         )}

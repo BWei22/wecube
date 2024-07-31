@@ -1,9 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, addDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import './Conversations.css';
 import Message from './Message';
+
+// Function to send a message
+const sendMessage = async (conversationId, listingId, recipientId, messageText) => {
+  try {
+    await addDoc(collection(db, 'messages'), {
+      conversationId: conversationId,
+      listingId: listingId,
+      senderId: auth.currentUser.uid,
+      recipientId: recipientId,
+      message: messageText,
+      timestamp: serverTimestamp(), // Use serverTimestamp to get the current time from Firestore server
+      isRead: false,
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
+};
 
 const Conversations = ({ onNewMessage }) => {
   const [conversations, setConversations] = useState([]);
@@ -94,7 +111,7 @@ const Conversations = ({ onNewMessage }) => {
 
     const q = query(
       collection(db, 'messages'),
-      where('conversationId', '==', conversation.id),
+      where('listingId', '==', conversation.listingId),
       where('recipientId', '==', auth.currentUser.uid),
       where('isRead', '==', false)
     );
@@ -135,11 +152,7 @@ const Conversations = ({ onNewMessage }) => {
       </div>
       <div className="conversation-messages">
         {selectedConversation ? (
-          <Message 
-            listingId={selectedConversation.listingId} 
-            conversationId={selectedConversation.id} 
-            recipientId={selectedConversation.participants.find(id => id !== auth.currentUser.uid)} 
-          />
+          <Message listingId={selectedConversation.listingId} />
         ) : (
           <p>Select a conversation to view messages</p>
         )}

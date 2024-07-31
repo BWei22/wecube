@@ -94,7 +94,7 @@ const Conversations = ({ onNewMessage }) => {
 
     const q = query(
       collection(db, 'messages'),
-      where('conversationId', '==', conversation.id),
+      where('listingId', '==', conversation.listingId),
       where('recipientId', '==', auth.currentUser.uid),
       where('isRead', '==', false)
     );
