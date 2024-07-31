@@ -94,7 +94,7 @@ const Conversations = ({ onNewMessage }) => {
 
     const q = query(
       collection(db, 'messages'),
-      where('conversationId', '==', conversation.id),
+      where('listingId', '==', conversation.listingId),
       where('recipientId', '==', auth.currentUser.uid),
       where('isRead', '==', false)
     );
@@ -103,15 +103,6 @@ const Conversations = ({ onNewMessage }) => {
     querySnapshot.forEach(async (docSnapshot) => {
       await updateDoc(docSnapshot.ref, { isRead: true });
     });
-
-    // Update the unreadBy field in the conversation document
-    const conversationRef = doc(db, 'conversations', conversation.id);
-    const conversationDoc = await getDoc(conversationRef);
-    if (conversationDoc.exists()) {
-      const conversationData = conversationDoc.data();
-      const updatedUnreadBy = conversationData.unreadBy.filter(id => id !== auth.currentUser.uid);
-      await updateDoc(conversationRef, { unreadBy: updatedUnreadBy });
-    }
 
     if (onNewMessage) {
       onNewMessage();
@@ -123,7 +114,7 @@ const Conversations = ({ onNewMessage }) => {
       <div className="conversations-list">
         {conversations.map((convo, index) => {
           const lastMessage = convo.lastMessage ? convo.lastMessage.message : '';
-          const isUnread = convo.lastMessage && convo.lastMessage.senderId !== auth.currentUser.uid && convo.unreadBy && convo.unreadBy.includes(auth.currentUser.uid);
+          const isUnread = convo.participants.includes(auth.currentUser.uid) && convo.lastMessage && convo.lastMessage.senderId !== auth.currentUser.uid && !convo.lastMessage.isRead;
           return (
             <div
               key={index}

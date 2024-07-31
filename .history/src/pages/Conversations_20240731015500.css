@@ -45,10 +45,18 @@
   color: #999;
 }
 
+.unread .conversation-item {
+  background-color: #e0f7fa; /* Light cyan background for unread */
+}
+
 .unread .conversation-title,
 .unread .conversation-username,
 .unread .conversation-preview {
   font-weight: bold;
+  color: #000; /* Black color for unread */
+}
+
+.unread .conversation-preview {
   color: #000; /* Ensure preview text is black for unread */
 }
 

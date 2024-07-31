@@ -27,7 +27,7 @@ const Message = ({ listingId, conversationId }) => {
 
     fetchRecipientId();
 
-    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('timestamp', 'asc'));
+    const q = query(collection(db, 'messages'), where('conversationId', '==', conversationId), orderBy('timestamp', 'asc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
@@ -56,7 +56,7 @@ const Message = ({ listingId, conversationId }) => {
     });
 
     return () => unsubscribe();
-  }, [listingId, usernames]);
+  }, [listingId, conversationId, usernames]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,24 +69,20 @@ const Message = ({ listingId, conversationId }) => {
     }
 
     try {
-      const messageData = {
-        listingId,
+      const messageRef = await addDoc(collection(db, 'messages'), {
         conversationId,
+        listingId,
         senderId: auth.currentUser.uid,
         recipientId,
         message: newMessage,
         timestamp: serverTimestamp(),
         isRead: false,
-      };
+      });
 
-      // Add the new message to the messages collection
-      await addDoc(collection(db, 'messages'), messageData);
-
-      // Update the last message in the conversation document
-      const conversationRef = doc(db, 'conversations', conversationId);
-      await updateDoc(conversationRef, {
-        lastMessage: messageData,
-        unreadBy: [recipientId], // Mark the recipient as having unread messages
+      // Update the lastMessage field in the corresponding conversation document
+      await updateDoc(doc(db, 'conversations', conversationId), {
+        lastMessage: newMessage,
+        lastMessageTimestamp: serverTimestamp()
       });
 
       setNewMessage('');

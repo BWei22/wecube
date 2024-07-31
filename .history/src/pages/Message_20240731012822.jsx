@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './Message.css';
 
-const Message = ({ listingId, conversationId }) => {
+const Message = ({ listingId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [recipientId, setRecipientId] = useState('');
@@ -27,7 +27,7 @@ const Message = ({ listingId, conversationId }) => {
 
     fetchRecipientId();
 
-    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('timestamp', 'asc'));
+    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('createdAt', 'asc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
@@ -69,26 +69,14 @@ const Message = ({ listingId, conversationId }) => {
     }
 
     try {
-      const messageData = {
+      await addDoc(collection(db, 'messages'), {
         listingId,
-        conversationId,
         senderId: auth.currentUser.uid,
         recipientId,
         message: newMessage,
-        timestamp: serverTimestamp(),
-        isRead: false,
-      };
-
-      // Add the new message to the messages collection
-      await addDoc(collection(db, 'messages'), messageData);
-
-      // Update the last message in the conversation document
-      const conversationRef = doc(db, 'conversations', conversationId);
-      await updateDoc(conversationRef, {
-        lastMessage: messageData,
-        unreadBy: [recipientId], // Mark the recipient as having unread messages
+        createdAt: serverTimestamp(),
+        isRead: false, // Set isRead to false for new messages
       });
-
       setNewMessage('');
     } catch (error) {
       console.error('Error sending message: ', error);

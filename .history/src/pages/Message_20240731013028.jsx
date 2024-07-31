@@ -5,29 +5,14 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './Message.css';
 
-const Message = ({ listingId, conversationId }) => {
+const Message = ({ listingId, conversationId, recipientId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [recipientId, setRecipientId] = useState('');
   const [usernames, setUsernames] = useState({});
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const fetchRecipientId = async () => {
-      try {
-        const docRef = doc(db, 'listings', listingId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setRecipientId(docSnap.data().userId);
-        }
-      } catch (error) {
-        console.error('Error fetching recipient ID:', error);
-      }
-    };
-
-    fetchRecipientId();
-
-    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('timestamp', 'asc'));
+    const q = query(collection(db, 'messages'), where('conversationId', '==', conversationId), orderBy('timestamp', 'asc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
@@ -56,7 +41,7 @@ const Message = ({ listingId, conversationId }) => {
     });
 
     return () => unsubscribe();
-  }, [listingId, usernames]);
+  }, [conversationId, usernames]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,24 +54,26 @@ const Message = ({ listingId, conversationId }) => {
     }
 
     try {
-      const messageData = {
-        listingId,
+      const newMsg = {
         conversationId,
+        listingId,
         senderId: auth.currentUser.uid,
         recipientId,
         message: newMessage,
-        timestamp: serverTimestamp(),
-        isRead: false,
+        timestamp: serverTimestamp(), // Use serverTimestamp to get the current time from Firestore server
+        isRead: false, // Set isRead to false for new messages
       };
 
-      // Add the new message to the messages collection
-      await addDoc(collection(db, 'messages'), messageData);
+      await addDoc(collection(db, 'messages'), newMsg);
 
-      // Update the last message in the conversation document
-      const conversationRef = doc(db, 'conversations', conversationId);
-      await updateDoc(conversationRef, {
-        lastMessage: messageData,
-        unreadBy: [recipientId], // Mark the recipient as having unread messages
+      // Update the lastMessage field in the conversations collection
+      await updateDoc(doc(db, 'conversations', conversationId), {
+        lastMessage: {
+          message: newMessage,
+          timestamp: serverTimestamp(),
+          senderId: auth.currentUser.uid,
+          isRead: false,
+        },
       });
 
       setNewMessage('');

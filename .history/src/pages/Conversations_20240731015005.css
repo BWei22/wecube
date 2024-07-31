@@ -31,7 +31,7 @@
 
 .conversation-title {
   font-size: 16px;
-  font-weight: normal;
+  font-weight: bold;
   color: #333;
 }
 
@@ -49,7 +49,6 @@
 .unread .conversation-username,
 .unread .conversation-preview {
   font-weight: bold;
-  color: #000; /* Ensure preview text is black for unread */
 }
 
 .unread-dot {
