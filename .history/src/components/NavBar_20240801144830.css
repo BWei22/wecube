@@ -16,6 +16,12 @@
   color: #333;
 }
 
+.navbar-username {
+  margin-right: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
 .navbar-right {
   display: flex;
   align-items: center;
@@ -23,10 +29,4 @@
 
 .navbar-right .MuiButton-root {
   margin-left: 10px;
-}
-
-.navbar-username {
-  margin-left: auto;
-  font-size: 16px;
-  color: #333;
 }

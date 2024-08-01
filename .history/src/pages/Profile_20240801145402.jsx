@@ -11,19 +11,11 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
-        const userId = auth.currentUser.uid;
-        console.log('Fetching profile for user ID:', userId);
-        const docRef = doc(db, 'users', userId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          console.log('Profile document data:', docSnap.data());
-          setUsername(docSnap.data().username || '');
-        } else {
-          console.log('No profile document found.');
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
+      const userId = auth.currentUser.uid;
+      const docRef = doc(db, 'users', userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUsername(docSnap.data().username || '');
       }
       setLoading(false);
     };
@@ -34,14 +26,9 @@ const Profile = () => {
   }, []);
 
   const handleSave = async () => {
-    try {
-      const userId = auth.currentUser.uid;
-      console.log('Saving profile for user ID:', userId, 'with username:', username);
-      await setDoc(doc(db, 'users', userId), { username }, { merge: true });
-      alert('Profile updated successfully!');
-    } catch (error) {
-      console.error('Error saving profile:', error);
-    }
+    const userId = auth.currentUser.uid;
+    await setDoc(doc(db, 'users', userId), { username }, { merge: true });
+    alert('Profile updated successfully!');
   };
 
   if (loading) {

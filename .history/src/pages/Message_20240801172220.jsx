@@ -28,17 +28,18 @@ const Message = ({ listingId, conversationId }) => {
     fetchRecipientId();
 
     const q = query(collection(db, 'messages'), where('conversationId', '==', conversationId), orderBy('timestamp', 'asc'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
-      querySnapshot.forEach(async (doc) => {
+      for (const doc of querySnapshot.docs) {
         const data = doc.data();
         msgs.push(data);
         userIds.add(data.senderId);
+
         if (data.recipientId === auth.currentUser.uid && !data.isRead) {
           await updateDoc(doc.ref, { isRead: true });
         }
-      });
+      }
       setMessages(msgs);
       userIds.forEach(async (userId) => {
         if (!usernames[userId]) {
@@ -56,7 +57,7 @@ const Message = ({ listingId, conversationId }) => {
     });
 
     return () => unsubscribe();
-  }, [conversationId, usernames]);
+  }, [listingId, conversationId, usernames]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -84,19 +85,9 @@ const Message = ({ listingId, conversationId }) => {
 
       // Update the last message in the conversation document
       const conversationRef = doc(db, 'conversations', conversationId);
-      const conversationDoc = await getDoc(conversationRef);
-      const conversationData = conversationDoc.data();
-
-      let updatedUnreadBy = conversationData.unreadBy || [];
-      if (!updatedUnreadBy.includes(recipientId)) {
-        updatedUnreadBy.push(recipientId);
-      }
-
-      console.log(`Updating conversation ${conversationId} unreadBy:`, updatedUnreadBy);
-
       await updateDoc(conversationRef, {
         lastMessage: messageData,
-        unreadBy: updatedUnreadBy, // Mark the recipient as having unread messages
+        unreadBy: [recipientId], // Mark the recipient as having unread messages
       });
 
       setNewMessage('');

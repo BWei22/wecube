@@ -1,33 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth'; // Adjust the import path as necessary
-import { db } from '../firebaseConfig';
+import { useAuth } from '../hooks/useAuth';
+import { db, auth } from '../firebaseConfig';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
 import './NavBar.css';
 
 const NavBar = () => {
-  const { user, username, signout } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const [newMessages, setNewMessages] = useState(0);
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
-    if (!user) {
-      console.log('No authenticated user found.');
+    if (!auth.currentUser) {
       return;
     }
 
-    const q = query(collection(db, 'messages'), where('recipientId', '==', user.uid), where('isRead', '==', false));
+    const fetchUsername = async () => {
+      const docRef = doc(db, 'users', auth.currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUsername(docSnap.data().username);
+      }
+    };
+
+    fetchUsername();
+
+    const q = query(
+      collection(db, 'conversations'),
+      where('participants', 'array-contains', auth.currentUser.uid)
+    );
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      setNewMessages(querySnapshot.size);
+      let unreadCount = 0;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.unreadBy && data.unreadBy.includes(auth.currentUser.uid)) {
+          unreadCount += 1;
+        }
+      });
+      setNewMessages(unreadCount);
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [auth.currentUser]);
 
   const handleLogout = () => {
-    signout(() => navigate('/'));
+    auth.signout(() => navigate('/'));
   };
 
   return (
@@ -37,14 +58,13 @@ const NavBar = () => {
         <Link to="/competitions">Competitions</Link>
       </div>
       <div className="navbar-right">
-        {user ? (
+        {auth.user ? (
           <>
             <Badge badgeContent={newMessages} color="error">
               <Link to="/conversations">Conversations</Link>
             </Badge>
-            <Link to="/profile">Profile</Link>
+            <Link to="/profile">{username}</Link>
             <Button onClick={handleLogout} variant="contained" color="secondary">Logout</Button>
-            <span className="navbar-username">{username}</span>
           </>
         ) : (
           <Button onClick={() => navigate('/auth')} variant="contained" color="primary">Login</Button>

@@ -1,33 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth'; // Adjust the import path as necessary
+import { useAuth } from '../hooks/useAuth';
 import { db } from '../firebaseConfig';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
 import './NavBar.css';
 
 const NavBar = () => {
-  const { user, username, signout } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const [newMessages, setNewMessages] = useState(0);
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
-    if (!user) {
+    if (!auth.currentUser) {
       console.log('No authenticated user found.');
       return;
     }
 
-    const q = query(collection(db, 'messages'), where('recipientId', '==', user.uid), where('isRead', '==', false));
+    const fetchUsername = async () => {
+      try {
+        console.log('Fetching username for user:', auth.currentUser.uid);
+        const userDocRef = doc(db, 'users', auth.currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          console.log('User document data:', userDocSnap.data());
+          setUsername(userDocSnap.data().username);
+        } else {
+          console.log('No user document found.');
+        }
+      } catch (error) {
+        console.error('Error fetching username:', error);
+      }
+    };
+
+    fetchUsername();
+
+    const q = query(collection(db, 'messages'), where('recipientId', '==', auth.currentUser.uid), where('isRead', '==', false));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       setNewMessages(querySnapshot.size);
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [auth.currentUser]);
 
   const handleLogout = () => {
-    signout(() => navigate('/'));
+    auth.signout(() => navigate('/'));
   };
 
   return (
@@ -37,7 +56,7 @@ const NavBar = () => {
         <Link to="/competitions">Competitions</Link>
       </div>
       <div className="navbar-right">
-        {user ? (
+        {auth.user ? (
           <>
             <Badge badgeContent={newMessages} color="error">
               <Link to="/conversations">Conversations</Link>

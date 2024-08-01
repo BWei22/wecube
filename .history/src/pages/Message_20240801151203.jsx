@@ -84,19 +84,9 @@ const Message = ({ listingId, conversationId }) => {
 
       // Update the last message in the conversation document
       const conversationRef = doc(db, 'conversations', conversationId);
-      const conversationDoc = await getDoc(conversationRef);
-      const conversationData = conversationDoc.data();
-
-      let updatedUnreadBy = conversationData.unreadBy || [];
-      if (!updatedUnreadBy.includes(recipientId)) {
-        updatedUnreadBy.push(recipientId);
-      }
-
-      console.log(`Updating conversation ${conversationId} unreadBy:`, updatedUnreadBy);
-
       await updateDoc(conversationRef, {
         lastMessage: messageData,
-        unreadBy: updatedUnreadBy, // Mark the recipient as having unread messages
+        unreadBy: [recipientId], // Mark the recipient as having unread messages
       });
 
       setNewMessage('');

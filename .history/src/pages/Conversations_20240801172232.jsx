@@ -110,7 +110,6 @@ const Conversations = ({ onNewMessage }) => {
     if (conversationDoc.exists()) {
       const conversationData = conversationDoc.data();
       const updatedUnreadBy = conversationData.unreadBy.filter(id => id !== auth.currentUser.uid);
-      console.log(`Updating unreadBy for conversation ${conversation.id}:`, updatedUnreadBy);
       await updateDoc(conversationRef, { unreadBy: updatedUnreadBy });
     }
 
@@ -125,7 +124,6 @@ const Conversations = ({ onNewMessage }) => {
         {conversations.map((convo, index) => {
           const lastMessage = convo.lastMessage ? convo.lastMessage.message : '';
           const isUnread = convo.lastMessage && convo.lastMessage.senderId !== auth.currentUser.uid && convo.unreadBy && convo.unreadBy.includes(auth.currentUser.uid);
-          console.log(`Conversation ${convo.id} isUnread: ${isUnread}`);
           return (
             <div
               key={index}

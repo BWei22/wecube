@@ -92,8 +92,6 @@ const Message = ({ listingId, conversationId }) => {
         updatedUnreadBy.push(recipientId);
       }
 
-      console.log(`Updating conversation ${conversationId} unreadBy:`, updatedUnreadBy);
-
       await updateDoc(conversationRef, {
         lastMessage: messageData,
         unreadBy: updatedUnreadBy, // Mark the recipient as having unread messages

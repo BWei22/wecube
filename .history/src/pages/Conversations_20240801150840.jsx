@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebaseConfig';
-import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, getDoc, updateDoc, getDocs, addDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import './Conversations.css';
 import Message from './Message';
@@ -104,16 +104,6 @@ const Conversations = ({ onNewMessage }) => {
       await updateDoc(docSnapshot.ref, { isRead: true });
     });
 
-    // Update the unreadBy field in the conversation document
-    const conversationRef = doc(db, 'conversations', conversation.id);
-    const conversationDoc = await getDoc(conversationRef);
-    if (conversationDoc.exists()) {
-      const conversationData = conversationDoc.data();
-      const updatedUnreadBy = conversationData.unreadBy.filter(id => id !== auth.currentUser.uid);
-      console.log(`Updating unreadBy for conversation ${conversation.id}:`, updatedUnreadBy);
-      await updateDoc(conversationRef, { unreadBy: updatedUnreadBy });
-    }
-
     if (onNewMessage) {
       onNewMessage();
     }
@@ -124,8 +114,7 @@ const Conversations = ({ onNewMessage }) => {
       <div className="conversations-list">
         {conversations.map((convo, index) => {
           const lastMessage = convo.lastMessage ? convo.lastMessage.message : '';
-          const isUnread = convo.lastMessage && convo.lastMessage.senderId !== auth.currentUser.uid && convo.unreadBy && convo.unreadBy.includes(auth.currentUser.uid);
-          console.log(`Conversation ${convo.id} isUnread: ${isUnread}`);
+          const isUnread = convo.lastMessage && convo.lastMessage.recipientId === auth.currentUser.uid && !convo.lastMessage.isRead;
           return (
             <div
               key={index}

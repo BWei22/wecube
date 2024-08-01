@@ -24,11 +24,6 @@ const CreateListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!auth.currentUser) {
-      console.error("User is not authenticated");
-      return;
-    }
-
     try {
       let imageUrl = '';
       if (image) {
@@ -52,7 +47,6 @@ const CreateListing = () => {
       navigate(`/listings/${competitionId}`);
     } catch (error) {
       console.error("Error adding document: ", error);
-      alert("Error creating listing. Please check your permissions and try again.");
     }
   };
 

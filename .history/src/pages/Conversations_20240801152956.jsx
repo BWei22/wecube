@@ -124,7 +124,7 @@ const Conversations = ({ onNewMessage }) => {
       <div className="conversations-list">
         {conversations.map((convo, index) => {
           const lastMessage = convo.lastMessage ? convo.lastMessage.message : '';
-          const isUnread = convo.lastMessage && convo.lastMessage.senderId !== auth.currentUser.uid && convo.unreadBy && convo.unreadBy.includes(auth.currentUser.uid);
+          const isUnread = convo.lastMessage && convo.lastMessage.recipientId === auth.currentUser.uid && convo.unreadBy && convo.unreadBy.includes(auth.currentUser.uid);
           console.log(`Conversation ${convo.id} isUnread: ${isUnread}`);
           return (
             <div
