@@ -27,7 +27,7 @@ const Message = ({ listingId, conversationId }) => {
 
     fetchRecipientId();
 
-    const q = query(collection(db, 'messages'), where('conversationId', '==', conversationId), orderBy('timestamp', 'asc'));
+    const q = query(collection(db, 'messages'), where('listingId', '==', listingId), orderBy('timestamp', 'asc'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const msgs = [];
       const userIds = new Set();
@@ -56,7 +56,7 @@ const Message = ({ listingId, conversationId }) => {
     });
 
     return () => unsubscribe();
-  }, [listingId, conversationId, usernames]);
+  }, [listingId, usernames]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,17 +69,11 @@ const Message = ({ listingId, conversationId }) => {
     }
 
     try {
-      // Determine the current recipient based on the last message
-      const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-      const currentRecipientId = lastMessage && lastMessage.senderId === auth.currentUser.uid
-        ? lastMessage.recipientId
-        : auth.currentUser.uid === listingId ? recipientId : lastMessage ? lastMessage.senderId : recipientId;
-
       const messageData = {
         listingId,
         conversationId,
         senderId: auth.currentUser.uid,
-        recipientId: currentRecipientId,
+        recipientId,
         message: newMessage,
         timestamp: serverTimestamp(),
         isRead: false,
@@ -92,7 +86,7 @@ const Message = ({ listingId, conversationId }) => {
       const conversationRef = doc(db, 'conversations', conversationId);
       await updateDoc(conversationRef, {
         lastMessage: messageData,
-        unreadBy: [currentRecipientId], // Mark the recipient as having unread messages
+        unreadBy: [recipientId], // Mark the recipient as having unread messages
       });
 
       setNewMessage('');

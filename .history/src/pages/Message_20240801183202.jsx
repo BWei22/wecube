@@ -73,7 +73,7 @@ const Message = ({ listingId, conversationId }) => {
       const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
       const currentRecipientId = lastMessage && lastMessage.senderId === auth.currentUser.uid
         ? lastMessage.recipientId
-        : auth.currentUser.uid === listingId ? recipientId : lastMessage ? lastMessage.senderId : recipientId;
+        : recipientId;
 
       const messageData = {
         listingId,
