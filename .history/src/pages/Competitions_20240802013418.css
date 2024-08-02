@@ -1,0 +1,44 @@
+.competitions {
+  text-align: center;
+  padding: 20px;
+}
+
+.view-toggle {
+  margin: 20px 0;
+}
+
+.competitions-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.competition-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.competition-item:hover {
+  background-color: #e0e0e0;
+}
+
+.competition-flag {
+  margin-right: 15px;
+}
+
+.competition-details {
+  text-align: left;
+}
+
+.competition-name {
+  font-weight: bold;
+}
+
+.competition-date {
+  color: #555;
+}

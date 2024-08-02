@@ -1,0 +1,52 @@
+/* src/pages/Competitions.css */
+.competitions {
+    padding: 20px;
+    text-align: left;
+  }
+  
+  .competitions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .competition-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .competition-item:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .competition-flag {
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+  
+  .competition-flag img {
+    width: 32px;
+    height: 24px;
+    border-radius: 2px;
+  }
+  
+  .competition-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .competition-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .competition-date {
+    font-size: 14px;
+    color: #888;
+  }
+  

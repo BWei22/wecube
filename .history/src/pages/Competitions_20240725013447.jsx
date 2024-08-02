@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Flag from "react-world-flags";
 import TextField from "@mui/material/TextField";
-import Button from '@mui/material/Button';
 import "./Competitions.css"; // Import the CSS file for styling
+import Button from '@mui/material/Button';
 
 const Competitions = () => {
   const [competitions, setCompetitions] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [view, setView] = useState("current"); // 'current' or 'past'
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch('https://raw.githubusercontent.com/robiningelbrecht/wca-rest-api/master/api/competitions-page-1.json')
       .then(response => response.json())
       .then(data => {
-        setCompetitions(data.items);
+        const upcomingCompetitions = data.items
+          .filter(comp => new Date(comp.date.from) >= new Date())
+          .sort((a, b) => new Date(a.date.from) - new Date(b.date.from)); // Sort competitions chronologically
+        setCompetitions(upcomingCompetitions);
       })
       .catch(error => console.error('Error fetching competitions:', error));
   }, []);
@@ -28,39 +30,10 @@ const Competitions = () => {
     setSearchQuery(event.target.value);
   };
 
-  const currentDate = new Date();
-  const pastMonthDate = new Date();
-  pastMonthDate.setMonth(currentDate.getMonth() - 1);
-
-  const filteredCompetitions = competitions.filter(comp => {
-    const competitionEndDate = new Date(comp.date.till);
-    const competitionStartDate = new Date(comp.date.from);
-    const isUpcoming = competitionStartDate >= currentDate;
-    const isRightNow = competitionStartDate <= currentDate && competitionEndDate >= currentDate;
-    const isPastMonth = competitionEndDate < currentDate && competitionEndDate >= pastMonthDate;
-
-    if (view === "current") {
-      return (isUpcoming || isRightNow) && (
-        comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        comp.city.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    } else if (view === "past") {
-      return isPastMonth && (
-        comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        comp.city.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    return false;
-  });
-
-  const sortedCompetitions = filteredCompetitions.sort((a, b) => {
-    if (view === "past") {
-      return new Date(b.date.till) - new Date(a.date.till);
-    } else {
-      return new Date(a.date.from) - new Date(b.date.from);
-    }
-  });
+  const filteredCompetitions = competitions.filter(comp => 
+    comp.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    comp.city.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleGoBack = () => {
     navigate("/");
@@ -81,21 +54,7 @@ const Competitions = () => {
   return (
     <div className="competitions">
       <Button onClick={handleGoBack}>Back</Button>
-      <h2>{view === "current" ? "Current Competitions" : "Past Month Competitions"}</h2>
-      <div className="view-toggle">
-        <Button 
-          variant={view === "current" ? "contained" : "outlined"} 
-          onClick={() => setView("current")}
-        >
-          Current
-        </Button>
-        <Button 
-          variant={view === "past" ? "contained" : "outlined"} 
-          onClick={() => setView("past")}
-        >
-          Past Month
-        </Button>
-      </div>
+      <h2>Upcoming Competitions</h2>
       <TextField
         label="Search Competitions"
         variant="outlined"
@@ -105,7 +64,7 @@ const Competitions = () => {
         onChange={handleSearchChange}
       />
       <ul className="competitions-list">
-        {sortedCompetitions.map(comp => (
+        {filteredCompetitions.map(comp => (
           <li key={comp.id} className="competition-item" onClick={() => handleCompetitionClick(comp.id)}>
             <div className="competition-flag">
               <Flag code={comp.country} height="24" />
