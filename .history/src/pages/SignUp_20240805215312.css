@@ -1,0 +1,30 @@
+.signup-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .signup-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .signup-button {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .google-button {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  

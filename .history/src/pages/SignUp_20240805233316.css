@@ -1,0 +1,49 @@
+/* src/pages/SignUp.css */
+.signup-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .signup-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .social-signup-button {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .or-divider {
+    margin: 20px 0;
+    position: relative;
+    text-align: center;
+  }
+  
+  .or-divider::before,
+  .or-divider::after {
+    content: "";
+    height: 1px;
+    width: 40%;
+    background: #ddd;
+    position: absolute;
+    top: 50%;
+  }
+  
+  .or-divider::before {
+    left: 0;
+  }
+  
+  .or-divider::after {
+    right: 0;
+  }
+  
+  .signup-button {
+    margin-top: 20px;
+    width: 100%;
+  }
+  
