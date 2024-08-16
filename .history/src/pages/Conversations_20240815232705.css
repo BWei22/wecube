@@ -48,7 +48,7 @@
 .unread .conversation-username,
 .unread .conversation-preview {
   font-weight: bold;
-  color: #000;
+  color: #000; /* Ensure preview text is black for unread */
 }
 
 .unread-dot {

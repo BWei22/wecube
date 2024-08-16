@@ -1,3 +1,4 @@
+// src/firebaseConfig.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -16,7 +17,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const storage = getStorage(app);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -26,4 +26,4 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-export { db, auth, storage };
+export { db, auth };

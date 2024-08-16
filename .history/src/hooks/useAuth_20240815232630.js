@@ -118,6 +118,6 @@ function useProvideAuth() {
     signinWithEmailAndPassword,
     signout,
     updateUsername,
-    updateEmailWithVerification,  
+    updateEmailWithVerification,  // Expose the updateEmailWithVerification function
   };
 }

@@ -1,7 +1,8 @@
+// src/pages/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button, TextField, CircularProgress } from '@mui/material';
-import { getAuth, updateEmail, updateProfile, sendEmailVerification, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { getAuth, updateEmail, updateProfile } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebaseConfig';
 import { doc, updateDoc, query, where, getDocs, collection, setDoc } from 'firebase/firestore';
@@ -53,18 +54,13 @@ const Profile = () => {
 
       const auth = getAuth();
 
-      // If email is changing, reauthenticate and send verification email
+      // If email is changing, store the new email in Firestore
       if (newEmail !== user.email) {
-        const credential = EmailAuthProvider.credential(user.email, prompt('Please enter your current password:'));
-        await reauthenticateWithCredential(auth.currentUser, credential);
-
-        // Send verification email
-        await sendEmailVerification(auth.currentUser);
-        alert(`A verification email has been sent to ${user.email}. Please verify it before updating your email.`);
-
-        // Store the new email in Firestore until verification is done
         const userDocRef = doc(db, 'users', user.uid);
         await setDoc(userDocRef, { pendingEmail: newEmail }, { merge: true });
+
+        alert(`Please verify your current email (${user.email}) before the new email can be updated.`);
+        await auth.currentUser.reload();
 
         setLoading(false);
         return; // Return early, email update will happen after verification

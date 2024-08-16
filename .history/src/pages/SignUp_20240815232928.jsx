@@ -49,7 +49,7 @@ const SignUp = () => {
       auth.setUser(user);
       auth.setUsername(generatedUsername);
 
-      navigate('/profile');  
+      navigate('/profile');  // Redirect to your desired page after successful signup
     } catch (error) {
       setError('Failed to create an account');
       console.error('Signup error:', error);

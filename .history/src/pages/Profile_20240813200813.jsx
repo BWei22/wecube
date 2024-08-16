@@ -1,10 +1,11 @@
+// src/pages/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button, TextField, CircularProgress } from '@mui/material';
-import { getAuth, updateEmail, updateProfile, sendEmailVerification, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { getAuth, updateEmail, updateProfile } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebaseConfig';
-import { doc, updateDoc, query, where, getDocs, collection, setDoc } from 'firebase/firestore';
+import { doc, updateDoc, query, where, getDocs, collection } from 'firebase/firestore';
 
 const Profile = () => {
   const { user, username, updateUsername } = useAuth();
@@ -53,36 +54,22 @@ const Profile = () => {
 
       const auth = getAuth();
 
-      // If email is changing, reauthenticate and send verification email
+      // Update the email
       if (newEmail !== user.email) {
-        const credential = EmailAuthProvider.credential(user.email, prompt('Please enter your current password:'));
-        await reauthenticateWithCredential(auth.currentUser, credential);
-
-        // Send verification email
-        await sendEmailVerification(auth.currentUser);
-        alert(`A verification email has been sent to ${user.email}. Please verify it before updating your email.`);
-
-        // Store the new email in Firestore until verification is done
-        const userDocRef = doc(db, 'users', user.uid);
-        await setDoc(userDocRef, { pendingEmail: newEmail }, { merge: true });
-
-        setLoading(false);
-        return; // Return early, email update will happen after verification
+        await updateEmail(auth.currentUser, newEmail);
       }
 
-      // Update the profile picture and username in Firebase Auth
+      // Update the profile in Firebase Auth
       await updateProfile(auth.currentUser, {
         displayName: newUsername,
         photoURL: profilePic,
       });
 
-      // Use the updateUsername function from useAuth to update the username in the context
-      await updateUsername(newUsername);
-
       // Update the user document in Firestore
       const userDocRef = doc(db, 'users', user.uid);
       await updateDoc(userDocRef, {
         username: newUsername,
+        email: newEmail,
         photoURL: profilePic,
       });
 

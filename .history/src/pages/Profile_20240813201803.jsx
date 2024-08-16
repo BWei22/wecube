@@ -1,10 +1,11 @@
+// src/pages/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Button, TextField, CircularProgress } from '@mui/material';
-import { getAuth, updateEmail, updateProfile, sendEmailVerification, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { getAuth, updateEmail, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebaseConfig';
-import { doc, updateDoc, query, where, getDocs, collection, setDoc } from 'firebase/firestore';
+import { doc, updateDoc, query, where, getDocs, collection } from 'firebase/firestore';
 
 const Profile = () => {
   const { user, username, updateUsername } = useAuth();
@@ -24,6 +25,17 @@ const Profile = () => {
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const sendVerificationEmail = async (email) => {
+    const auth = getAuth();
+    try {
+      await sendEmailVerification(auth.currentUser);
+      alert(`A verification email has been sent to ${email}. Please verify it before updating your email.`);
+    } catch (error) {
+      console.error('Error sending verification email:', error);
+      setError('Failed to send verification email.');
+    }
   };
 
   const handleUpdateProfile = async () => {
@@ -53,19 +65,9 @@ const Profile = () => {
 
       const auth = getAuth();
 
-      // If email is changing, reauthenticate and send verification email
+      // Send verification email if email is changing
       if (newEmail !== user.email) {
-        const credential = EmailAuthProvider.credential(user.email, prompt('Please enter your current password:'));
-        await reauthenticateWithCredential(auth.currentUser, credential);
-
-        // Send verification email
-        await sendEmailVerification(auth.currentUser);
-        alert(`A verification email has been sent to ${user.email}. Please verify it before updating your email.`);
-
-        // Store the new email in Firestore until verification is done
-        const userDocRef = doc(db, 'users', user.uid);
-        await setDoc(userDocRef, { pendingEmail: newEmail }, { merge: true });
-
+        await sendVerificationEmail(newEmail);
         setLoading(false);
         return; // Return early, email update will happen after verification
       }
@@ -83,6 +85,7 @@ const Profile = () => {
       const userDocRef = doc(db, 'users', user.uid);
       await updateDoc(userDocRef, {
         username: newUsername,
+        email: newEmail,
         photoURL: profilePic,
       });
 

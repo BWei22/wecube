@@ -21,7 +21,7 @@ const Login = () => {
     try {
       setLoading(true);
       await auth.signinWithEmailAndPassword(email, password);  
-      navigate('/competitions');
+      navigate('/competitions');  // Redirect to your desired page after login
     } catch (error) {
       setError('Failed to sign in');
       console.error('Login error:', error);

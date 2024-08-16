@@ -8,7 +8,7 @@ import "./Competitions.css";
 const Competitions = () => {
   const [competitions, setCompetitions] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [view, setView] = useState("current");
+  const [view, setView] = useState("current"); // 'current' or 'past'
   const navigate = useNavigate();
 
   useEffect(() => {

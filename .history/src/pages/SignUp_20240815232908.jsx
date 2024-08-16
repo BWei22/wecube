@@ -37,7 +37,7 @@ const SignUp = () => {
       const user = await auth.signupWithEmailAndPassword(email, password);
       console.log("User created in Firebase:", user.uid);
 
-      // Generate a unique username 
+      // Generate a unique username (you can customize this logic)
       const generatedUsername = `user${Date.now()}`;
 
       // Set the user in Firestore with the generated username
@@ -49,7 +49,7 @@ const SignUp = () => {
       auth.setUser(user);
       auth.setUsername(generatedUsername);
 
-      navigate('/profile');  
+      navigate('/profile');  // Redirect to your desired page after successful signup
     } catch (error) {
       setError('Failed to create an account');
       console.error('Signup error:', error);

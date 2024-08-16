@@ -113,11 +113,11 @@ function useProvideAuth() {
     user,
     username,
     setUser,          
-    setUsername,      
+    setUsername,      // Ensure setUsername is exposed to the context
     signupWithEmailAndPassword,
     signinWithEmailAndPassword,
     signout,
     updateUsername,
-    updateEmailWithVerification,  
+    updateEmailWithVerification,  // Expose the updateEmailWithVerification function
   };
 }
