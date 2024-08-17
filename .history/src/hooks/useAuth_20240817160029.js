@@ -4,10 +4,13 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged,
-  deleteUser as firebaseDeleteUser 
+  onAuthStateChanged, 
+  updateEmail, 
+  sendEmailVerification,
+  reauthenticateWithCredential,
+  EmailAuthProvider 
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, collection, deleteDoc, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 const AuthContext = createContext();
@@ -91,50 +94,6 @@ function useProvideAuth() {
     }
   };
 
-  const deleteAccount = async () => {
-    if (!user) return;
-
-    try {
-      // Delete user's messages
-      const messagesRef = collection(db, 'messages');
-      const messagesQuery = query(messagesRef, where('senderId', '==', user.uid));
-      const messagesSnapshot = await getDocs(messagesQuery);
-      messagesSnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
-
-      // Delete user's listings
-      const listingsRef = collection(db, 'listings');
-      const listingsQuery = query(listingsRef, where('userId', '==', user.uid));
-      const listingsSnapshot = await getDocs(listingsQuery);
-      listingsSnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
-
-      // Delete user's conversations
-      const conversationsRef = collection(db, 'conversations');
-      const conversationsQuery = query(conversationsRef, where('participants', 'array-contains', user.uid));
-      const conversationsSnapshot = await getDocs(conversationsQuery);
-      conversationsSnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref);
-      });
-
-      // Delete user's data in Firestore
-      const userDocRef = doc(db, 'users', user.uid);
-      await deleteDoc(userDocRef);
-
-      // Delete the Firebase user
-      await firebaseDeleteUser(auth.currentUser);
-
-      // Sign out the user
-      await signout();
-
-    } catch (error) {
-      console.error('Failed to delete account:', error);
-    }
-  };
-
-
   return {
     user,
     username,
@@ -144,6 +103,5 @@ function useProvideAuth() {
     signinWithEmailAndPassword,
     signout,
     updateUsername,  
-    deleteAccount,
   };
 }

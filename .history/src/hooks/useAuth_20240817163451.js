@@ -5,7 +5,9 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  deleteUser as firebaseDeleteUser 
+  deleteUser as firebaseDeleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider 
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, collection, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
@@ -38,21 +40,6 @@ function useProvideAuth() {
 
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
-          
-          // Check if there is a pending email update
-          if (userData.pendingEmail && user.emailVerified) {
-            try {
-              // Update the email to the pending email
-              await updateEmail(user, userData.pendingEmail);
-              
-              // Clear the pending email in Firestore
-              await updateDoc(userDocRef, { email: userData.pendingEmail, pendingEmail: '' });
-
-              console.log('Email successfully updated to:', userData.pendingEmail);
-            } catch (error) {
-              console.error('Failed to update email:', error);
-            }
-          }
           setUser(user);
           setUsername(userDocSnap.data().username || '');
         }
@@ -91,10 +78,21 @@ function useProvideAuth() {
     }
   };
 
+  const reauthenticateUser = async () => {
+    const credential = EmailAuthProvider.credential(
+      user.email, 
+      prompt('Please enter your password to confirm account deletion:')
+    );
+    await reauthenticateWithCredential(auth.currentUser, credential);
+  };
+
   const deleteAccount = async () => {
     if (!user) return;
 
     try {
+      // Reauthenticate the user before deletion
+      await reauthenticateUser();
+
       // Delete user's messages
       const messagesRef = collection(db, 'messages');
       const messagesQuery = query(messagesRef, where('senderId', '==', user.uid));

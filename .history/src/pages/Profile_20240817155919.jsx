@@ -1,20 +1,19 @@
 // src/pages/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Button, TextField, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
+import { Button, TextField, CircularProgress } from '@mui/material';
 import { getAuth, updateProfile } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebaseConfig';
 import { doc, updateDoc, query, where, getDocs, collection, setDoc } from 'firebase/firestore';
 
 const Profile = () => {
-  const { user, username, updateUsername, deleteAccount } = useAuth();
+  const { user, username, updateUsername } = useAuth();
   const [newUsername, setNewUsername] = useState(username || '');
   const [profilePic, setProfilePic] = useState(user?.photoURL || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setNewUsername(username || '');
@@ -93,19 +92,6 @@ const Profile = () => {
     );
   };
 
-  const handleDeleteAccount = () => {
-    setOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    setOpen(false);
-    await deleteAccount();
-  };
-
-  const handleCancelDelete = () => {
-    setOpen(false);
-  };
-
   return (
     <div>
       <h2>Edit Profile</h2>
@@ -140,35 +126,6 @@ const Profile = () => {
       >
         {loading ? 'Updating...' : 'Update Profile'}
       </Button>
-      <Button
-        onClick={handleDeleteAccount}
-        variant="contained"
-        color="secondary"
-        disabled={loading || uploading}
-        style={{ marginTop: '20px' }}
-      >
-        Delete Account
-      </Button>
-
-      <Dialog
-        open={open}
-        onClose={handleCancelDelete}
-      >
-        <DialogTitle>Confirm Account Deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete your account? This action cannot be undone, and all your data will be permanently removed.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelDelete} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmDelete} color="secondary">
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };

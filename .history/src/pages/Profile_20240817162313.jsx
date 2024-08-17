@@ -8,7 +8,7 @@ import { db, storage } from '../firebaseConfig';
 import { doc, updateDoc, query, where, getDocs, collection, setDoc } from 'firebase/firestore';
 
 const Profile = () => {
-  const { user, username, updateUsername, deleteAccount } = useAuth();
+  const { user, username, updateUsername } = useAuth();
   const [newUsername, setNewUsername] = useState(username || '');
   const [profilePic, setProfilePic] = useState(user?.photoURL || '');
   const [error, setError] = useState('');

@@ -1,14 +1,14 @@
 // src/pages/Profile.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Button, TextField, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText } from '@mui/material';
+import { Button, TextField, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { getAuth, updateProfile } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../firebaseConfig';
 import { doc, updateDoc, query, where, getDocs, collection, setDoc } from 'firebase/firestore';
 
 const Profile = () => {
-  const { user, username, updateUsername, deleteAccount } = useAuth();
+  const { user, username, updateUsername } = useAuth();
   const [newUsername, setNewUsername] = useState(username || '');
   const [profilePic, setProfilePic] = useState(user?.photoURL || '');
   const [error, setError] = useState('');

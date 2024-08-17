@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   deleteUser as firebaseDeleteUser 
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, collection, deleteDoc, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, collection, deleteDoc, } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 const AuthContext = createContext();
