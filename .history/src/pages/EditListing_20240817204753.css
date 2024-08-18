@@ -1,0 +1,64 @@
+.edit-listing-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-listing-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .edit-listing-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-listing-form .MuiTextField-root {
+    margin-bottom: 20px;
+  }
+  
+  .edit-listing-form .MuiButton-root {
+    margin-top: 20px;
+  }
+  
+  .edit-listing-image-preview {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  
+  .edit-listing-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .edit-listing-form input[type="file"] {
+    margin-top: 10px;
+  }
+  
+  .edit-listing-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .edit-listing-actions .MuiButton-root {
+    width: 48%;
+  }
+  
+  .error-message {
+    color: red;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  

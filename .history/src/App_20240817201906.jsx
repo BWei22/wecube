@@ -5,7 +5,7 @@ import Competitions from './pages/Competitions';
 import Listings from './pages/Listings';
 import CreateListing from './pages/CreateListing';
 import ListingDetails from './pages/ListingDetails';
-import EditListing from './pages/EditListing';
+import 
 import Notifications from './pages/Notifications';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -30,7 +30,6 @@ const App = () => {
             <Route path="/listings/:competitionId" element={<Listings />} />
             <Route path="/create-listing/:competitionId" element={<PrivateRoute><CreateListing /></PrivateRoute>} />
             <Route path="/listing/:listingId" element={<ListingDetails />} />
-            <Route path="/edit-listing/:listingId" element={<EditListing />} />
             <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />

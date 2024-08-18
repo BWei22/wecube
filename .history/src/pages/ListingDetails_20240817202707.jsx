@@ -63,8 +63,8 @@ const ListingDetails = () => {
       <img src={listing.imageUrl} alt={listing.name} className="listing-image" />
       <div className="listing-info">
         <h2>{listing.name}</h2>
-        <p>Price: {listing.price}</p>
-        <p>Usage: {listing.usage}</p>
+        <p>Price: ${listing.price}</p>
+        
         <p>Description: {listing.description}</p>
         {auth.currentUser && listing.userId !== auth.currentUser.uid && (
           <Button variant="contained" color="primary" onClick={handleContactSeller}>
