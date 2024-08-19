@@ -21,8 +21,6 @@ const Listings = () => {
   const { competitionId } = useParams();
   const [listings, setListings] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPuzzleType, setSelectedPuzzleType] = useState('');
-  const [sortOrder, setSortOrder] = useState('chronological');
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
   const navigate = useNavigate();
@@ -71,20 +69,9 @@ const Listings = () => {
     navigate(`/edit-listing/${id}`);
   };
 
-  const filteredListings = listings
-    .filter(listing =>
-      listing.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedPuzzleType === '' || listing.puzzleType === selectedPuzzleType)
-    )
-    .sort((a, b) => {
-      if (sortOrder === 'priceLowToHigh') {
-        return a.price - b.price;
-      } else if (sortOrder === 'priceHighToLow') {
-        return b.price - a.price;
-      } else {
-        return b.createdAt - a.createdAt;
-      }
-    });
+  const filteredListings = listings.filter(listing =>
+    listing.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleCreateListingClick = (competitionId) => {
     navigate(`/create-listing/${competitionId}`);
@@ -110,28 +97,6 @@ const Listings = () => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-
-      <div className="filters">
-        <div>
-          <label>Puzzle Type:</label>
-          <select onChange={(e) => setSelectedPuzzleType(e.target.value)} value={selectedPuzzleType}>
-            <option value="">All</option>
-            {puzzleTypes.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label>Sort By:</label>
-          <select onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
-            <option value="chronological">Newest</option>
-            <option value="priceLowToHigh">Price: Low to High</option>
-            <option value="priceHighToLow">Price: High to Low</option>
-          </select>
-        </div>
-      </div>
-
       <Button variant="contained" color="primary" onClick={() => handleCreateListingClick(competitionId)}>
         + Create Listing
       </Button>

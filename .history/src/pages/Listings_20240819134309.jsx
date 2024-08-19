@@ -74,7 +74,7 @@ const Listings = () => {
   const filteredListings = listings
     .filter(listing =>
       listing.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedPuzzleType === '' || listing.puzzleType === selectedPuzzleType)
+      (selectedPuzzleType === '' || listing.type === selectedPuzzleType)
     )
     .sort((a, b) => {
       if (sortOrder === 'priceLowToHigh') {

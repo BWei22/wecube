@@ -74,7 +74,7 @@ const Listings = () => {
   const filteredListings = listings
     .filter(listing =>
       listing.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedPuzzleType === '' || listing.puzzleType === selectedPuzzleType)
+      (selectedPuzzleType === '' || listing.type === selectedPuzzleType)
     )
     .sort((a, b) => {
       if (sortOrder === 'priceLowToHigh') {
@@ -125,7 +125,7 @@ const Listings = () => {
         <div>
           <label>Sort By:</label>
           <select onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
-            <option value="chronological">Newest</option>
+            <option value="chronological">Chronological</option>
             <option value="priceLowToHigh">Price: Low to High</option>
             <option value="priceHighToLow">Price: High to Low</option>
           </select>

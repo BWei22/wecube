@@ -65,7 +65,7 @@ const ListingDetails = () => {
 
   return (
     <div className="listing-container">
-      <Button className="back-button" onClick={handleGoBack} style={{ marginBottom: '20px' }}>
+      <Button className="back-button" onClick={handleGoBack}>
         Back
       </Button>
       <img src={listing.imageUrl} alt={listing.name} className="listing-image" />
