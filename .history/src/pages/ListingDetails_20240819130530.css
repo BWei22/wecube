@@ -26,7 +26,7 @@
   padding-left: 0;
 }
 
-.back-button:hover {
+.listing-container .back-button:hover {
   text-decoration: underline;
 }
 

@@ -32,17 +32,12 @@ const CreateListing = () => {
   };
 
   const handlePriceChange = (e) => {
-    const input = e.target.value.replace('$', '');
-    let sanitizedInput = input.replace(/[^0-9.]/g, '');
-
-    const parts = sanitizedInput.split('.');
-    if (parts.length > 2) {
-        sanitizedInput = `${parts[0]}.${parts[1]}`;
-    } else if (parts.length === 2) {
-        sanitizedInput = `${parts[0]}.${parts[1].slice(0, 2)}`;
-    }
-
-    setPrice(`${sanitizedInput}`);
+    const input = e.target.value;
+    // Remove any non-numeric characters (except for the $ at the beginning)
+    const sanitizedInput = input.replace(/[^0-9.]/g, '');
+    
+    // Add a $ at the start if it's not already there
+    setPrice(sanitizedInput ? `$${sanitizedInput}` : '$');
   };
 
   const handleSubmit = async (e) => {
@@ -135,9 +130,6 @@ const CreateListing = () => {
           required
           fullWidth
           margin="normal"
-          InputProps={{
-            startAdornment: <span>$</span>,
-          }}
         />
         <TextField
           label="Usage"

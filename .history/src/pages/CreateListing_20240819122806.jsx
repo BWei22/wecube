@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db, auth } from "../firebaseConfig";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import "./EditListing.css";
+import { TextField, Button, CircularProgress, MenuItem } from "@mui/material";
+import './CreateListing.css';
 
 const puzzleTypes = [
   "3x3", "2x2", "4x4", "5x5", "6x6", "7x7", 
@@ -14,39 +12,18 @@ const puzzleTypes = [
   "Clock", "Non-WCA", "Miscellaneous"
 ];
 
-const EditListing = () => {
-  const { listingId } = useParams();
+const usageOptions = ["New", "Like New", "Used"];
+
+const CreateListing = () => {
   const [name, setName] = useState('');
   const [puzzleType, setPuzzleType] = useState('');
-  const [price, setPrice] = useState('$');
-  const [usage, setUsage] = useState('');
+  const [price, setPrice] = useState('');
+  const [usage, setUsage] = useState(usageOptions[0]);
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { competitionId } = useParams();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchListing = async () => {
-      try {
-        const docRef = doc(db, "listings", listingId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const listingData = docSnap.data();
-          setName(listingData.name);
-          setPuzzleType(listingData.puzzleType);
-          setPrice(listingData.price || '$');
-          setUsage(listingData.usage);
-          setDescription(listingData.description);
-          setImageUrl(listingData.imageUrl || '');
-        }
-      } catch (error) {
-        console.error("Error fetching listing:", error);
-      }
-    };
-
-    fetchListing();
-  }, [listingId]);
 
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
@@ -55,8 +32,9 @@ const EditListing = () => {
   };
 
   const handlePriceChange = (e) => {
-    const input = e.target.value.replace('$', '');
-    let sanitizedInput = input.replace(/[^0-9.]/g, '');
+    const input = e.target.value;
+    // Remove any non-numeric characters (except for the $ at the beginning)
+    const sanitizedInput = input.replace(/[^0-9.]/g, '');
 
     const parts = sanitizedInput.split('.');
     if (parts.length > 2) {
@@ -64,8 +42,9 @@ const EditListing = () => {
     } else if (parts.length === 2) {
         sanitizedInput = `${parts[0]}.${parts[1].slice(0, 2)}`;
     }
-
-    setPrice(`${sanitizedInput}`);
+    
+    // Add a $ at the start if it's not already there
+    setPrice(sanitizedInput ? `$${sanitizedInput}` : '$');
   };
 
   const handleSubmit = async (e) => {
@@ -79,41 +58,55 @@ const EditListing = () => {
     setLoading(true);
 
     try {
-      let newImageUrl = imageUrl;
+      let imageUrl = '';
       if (image) {
         const storage = getStorage();
         const storageRef = ref(storage, `images/${image.name}`);
-        await uploadBytes(storageRef, image);
-        newImageUrl = await getDownloadURL(storageRef);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            null,
+            reject,
+            async () => {
+              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve();
+            }
+          );
+        });
       }
 
-      await updateDoc(doc(db, "listings", listingId), {
+      await addDoc(collection(db, "listings"), {
         name,
         puzzleType,
         price,
         usage,
         description,
-        imageUrl: newImageUrl,
+        imageUrl,
+        competitionId,
+        userId: auth.currentUser.uid,
+        createdAt: serverTimestamp(),
       });
 
-      navigate(`/listing/${listingId}`);
+      setLoading(false);
+      navigate(`/listings/${competitionId}`);
     } catch (error) {
-      console.error("Error updating document: ", error);
-      alert("Error updating listing. Please check your permissions and try again.");
-    } finally {
+      console.error("Error adding document: ", error);
+      alert("Error creating listing. Please check your permissions and try again.");
       setLoading(false);
     }
   };
 
   const handleGoBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(`/listings/${competitionId}`);
   };
 
   return (
-    <div className="edit-listing-container">
+    <div className="create-listing-container">
       <Button onClick={handleGoBack}>Back</Button>
-      <h2>Edit Listing</h2>
-      <form className="edit-listing-form" onSubmit={handleSubmit}>
+      <h2 className="create-listing-title">Create Listing</h2>
+      <form onSubmit={handleSubmit} className="create-listing-form">
         <TextField
           label="Puzzle Name"
           value={name}
@@ -144,9 +137,6 @@ const EditListing = () => {
           required
           fullWidth
           margin="normal"
-          InputProps={{
-            startAdornment: <span>$</span>,
-          }}
         />
         <TextField
           label="Usage"
@@ -154,8 +144,15 @@ const EditListing = () => {
           onChange={(e) => setUsage(e.target.value)}
           required
           fullWidth
+          select
           margin="normal"
-        />
+        >
+          {usageOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
           label="Description"
           value={description}
@@ -164,14 +161,27 @@ const EditListing = () => {
           fullWidth
           margin="normal"
         />
-        <input type="file" onChange={handleImageChange} />
-        {imageUrl && <img src={imageUrl} alt="Current Listing" width="100" />}
-        <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          {loading ? 'Updating...' : 'Update Listing'}
+        <label htmlFor="image-upload">Image:</label>
+        <input
+          id="image-upload"
+          type="file"
+          onChange={handleImageChange}
+          disabled={loading}
+          accept="image/*"
+        />
+        {loading && <CircularProgress />}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+          className="create-listing-submit"
+        >
+          {loading ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
     </div>
   );
 };
 
-export default EditListing;
+export default CreateListing;

@@ -54,8 +54,8 @@ const ListingDetails = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
+  const handleGoBackToListings = () => {
+    navigate(-1); // Navigate back to the previous page (Listings page)
   };
 
   if (!listing) {
@@ -64,8 +64,8 @@ const ListingDetails = () => {
 
   return (
     <div className="listing-container">
-      <Button className="back-button" onClick={handleGoBack}>
-        Back
+      <Button onClick={handleGoBackToListings} variant="contained" color="primary" style={{ marginBottom: '10px' }}>
+        Listings
       </Button>
       <img src={listing.imageUrl} alt={listing.name} className="listing-image" />
       <div className="listing-info">

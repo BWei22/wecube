@@ -65,7 +65,7 @@ const EditListing = () => {
         sanitizedInput = `${parts[0]}.${parts[1].slice(0, 2)}`;
     }
 
-    setPrice(`${sanitizedInput}`);
+    setPrice(`$${sanitizedInput}`);
   };
 
   const handleSubmit = async (e) => {

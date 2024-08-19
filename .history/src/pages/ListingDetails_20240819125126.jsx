@@ -54,19 +54,17 @@ const ListingDetails = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   if (!listing) {
     return <p>Loading...</p>;
   }
 
+  const handleGoBack = () => {
+    navigate("/listings");
+  };
+
   return (
     <div className="listing-container">
-      <Button className="back-button" onClick={handleGoBack}>
-        Back
-      </Button>
+      <Button onclick={handleGoBack}>Listings</Button>
       <img src={listing.imageUrl} alt={listing.name} className="listing-image" />
       <div className="listing-info">
         <h2>{listing.name}</h2>

@@ -4,19 +4,13 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db, auth } from "../firebaseConfig";
 import { TextField, Button, CircularProgress, MenuItem } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 import './CreateListing.css';
-
-const puzzleTypes = [
-  "3x3", "2x2", "4x4", "5x5", "6x6", "7x7", 
-  "Megaminx", "Pyraminx", "Skewb", "Square-1", 
-  "Clock", "Non-WCA", "Miscellaneous"
-];
 
 const usageOptions = ["New", "Like New", "Used"];
 
 const CreateListing = () => {
   const [name, setName] = useState('');
-  const [puzzleType, setPuzzleType] = useState('');
   const [price, setPrice] = useState('');
   const [usage, setUsage] = useState(usageOptions[0]);
   const [description, setDescription] = useState('');
@@ -29,20 +23,6 @@ const CreateListing = () => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
     }
-  };
-
-  const handlePriceChange = (e) => {
-    const input = e.target.value.replace('$', '');
-    let sanitizedInput = input.replace(/[^0-9.]/g, '');
-
-    const parts = sanitizedInput.split('.');
-    if (parts.length > 2) {
-        sanitizedInput = `${parts[0]}.${parts[1]}`;
-    } else if (parts.length === 2) {
-        sanitizedInput = `${parts[0]}.${parts[1].slice(0, 2)}`;
-    }
-
-    setPrice(`${sanitizedInput}`);
   };
 
   const handleSubmit = async (e) => {
@@ -77,7 +57,6 @@ const CreateListing = () => {
 
       await addDoc(collection(db, "listings"), {
         name,
-        puzzleType,
         price,
         usage,
         description,
@@ -114,30 +93,12 @@ const CreateListing = () => {
           margin="normal"
         />
         <TextField
-          label="Puzzle Type"
-          select
-          value={puzzleType}
-          onChange={(e) => setPuzzleType(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        >
-          {puzzleTypes.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
           label="Asking Price"
           value={price}
-          onChange={handlePriceChange}
+          onChange={(e) => setPrice(e.target.value)}
           required
           fullWidth
           margin="normal"
-          InputProps={{
-            startAdornment: <span>$</span>,
-          }}
         />
         <TextField
           label="Usage"

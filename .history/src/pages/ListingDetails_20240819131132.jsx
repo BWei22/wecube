@@ -64,8 +64,8 @@ const ListingDetails = () => {
 
   return (
     <div className="listing-container">
-      <Button className="back-button" onClick={handleGoBack}>
-        Back
+      <Button className="back-button" onClick={handleGoBackToListings}>
+        Listings
       </Button>
       <img src={listing.imageUrl} alt={listing.name} className="listing-image" />
       <div className="listing-info">

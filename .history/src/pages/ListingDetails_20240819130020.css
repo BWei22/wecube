@@ -13,7 +13,7 @@
   box-sizing: border-box;
 }
 
-.back-button {
+.listing-container .back-button {
   background: none;
   color: #1565C0; /* Adjust the color to match the "Back" button */
   border: none;
@@ -21,12 +21,9 @@
   text-transform: uppercase;
   cursor: pointer;
   margin-bottom: 20px;
-  display: inline-block; /* Make sure the button doesn't span the full width */
-  text-align: left;
-  padding-left: 0;
 }
 
-.back-button:hover {
+.listing-container .back-button:hover {
   text-decoration: underline;
 }
 
