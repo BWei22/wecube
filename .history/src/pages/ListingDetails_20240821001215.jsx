@@ -76,20 +76,20 @@ const ListingDetails = () => {
         <p>Usage: {listing.usage}</p>
         <p>Description: {listing.description}</p>
         {listing.userId !== auth.currentUser?.uid && (
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={() => {
-              if (auth.currentUser) {
-                handleContactSeller();  // Handle contacting the seller
-              } else {
-                navigate('/login', { state: { from: location.pathname } });  // Redirect to login
-              }
-            }}
-          >
-            Contact the Seller
-          </Button>
-        )}
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => {
+            if (auth.currentUser) {
+              handleContactSeller();  // Handle contacting the seller
+            } else {
+              navigate('/login', { state: { from: location.pathname } });  // Redirect to login
+            }
+          }}
+        >
+          Contact the Seller
+        </Button>
+)}
 
       </div>
     </div>

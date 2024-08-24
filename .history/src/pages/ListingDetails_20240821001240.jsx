@@ -89,7 +89,7 @@ const ListingDetails = () => {
           >
             Contact the Seller
           </Button>
-        )}
+          )}
 
       </div>
     </div>

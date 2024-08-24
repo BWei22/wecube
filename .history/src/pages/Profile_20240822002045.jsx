@@ -101,86 +101,82 @@ const Profile = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="page-content">
-        <Box className="profile-container">
-          <Typography variant="h4" component="h2" className="profile-header">
-            Edit Profile
-          </Typography>
-          <TextField
-            label="Username"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-            disabled={loading}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            className="profile-input"
-          />
-          <Box className="profile-picture-section">
-            <Typography variant="subtitle1" gutterBottom>
-              Profile Picture
-            </Typography>
-            <Box className="profile-picture-upload">
-              <Button
-                variant="contained"
-                component="label"
-                disabled={uploading || loading}
-                className="profile-picture-button"
-              >
-                Upload
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleFileChange}
-                />
-              </Button>
-              {uploading && <CircularProgress size={24} className="profile-upload-progress" />}
-              {profilePic && <img src={profilePic} alt="Profile" className="profile-picture-image" />}
-            </Box>
-          </Box>
-          {error && <Typography color="error" variant="body2" className="profile-error">{error}</Typography>}
+    <Box className="profile-container">
+      <Typography variant="h4" component="h2" className="profile-header">
+        Edit Profile
+      </Typography>
+      <TextField
+        label="Username"
+        value={newUsername}
+        onChange={(e) => setNewUsername(e.target.value)}
+        disabled={loading}
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        className="profile-input"
+      />
+      <Box className="profile-picture-section">
+        <Typography variant="subtitle1" gutterBottom>
+          Profile Picture
+        </Typography>
+        <Box className="profile-picture-upload">
           <Button
-            onClick={handleUpdateProfile}
             variant="contained"
-            color="primary"
-            disabled={loading || uploading}
-            className="profile-button"
+            component="label"
+            disabled={uploading || loading}
+            className="profile-picture-button"
           >
-            {loading ? 'Updating...' : 'Update Profile'}
+            Upload
+            <input
+              type="file"
+              hidden
+              onChange={handleFileChange}
+            />
           </Button>
-          <Button
-            onClick={handleDeleteAccount}
-            variant="outlined"
-            color="error"
-            disabled={loading || uploading}
-            className="profile-delete-button"
-          >
-            Delete Account
-          </Button>
-
-          <Dialog
-            open={open}
-            onClose={handleCancelDelete}
-          >
-            <DialogTitle>Confirm Account Deletion</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Are you sure you want to delete your account? This action cannot be undone, and all your data will be permanently removed.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCancelDelete} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleConfirmDelete} color="secondary">
-                Confirm
-              </Button>
-            </DialogActions>
-          </Dialog>
+          {uploading && <CircularProgress size={24} className="profile-upload-progress" />}
+          {profilePic && <img src={profilePic} alt="Profile" className="profile-picture-image" />}
         </Box>
-      </div>
-    </div>
+      </Box>
+      {error && <Typography color="error" variant="body2" className="profile-error">{error}</Typography>}
+      <Button
+        onClick={handleUpdateProfile}
+        variant="contained"
+        color="primary"
+        disabled={loading || uploading}
+        className="profile-button"
+      >
+        {loading ? 'Updating...' : 'Update Profile'}
+      </Button>
+      <Button
+        onClick={handleDeleteAccount}
+        variant="outlined"
+        color="error"
+        disabled={loading || uploading}
+        className="profile-delete-button"
+      >
+        Delete Account
+      </Button>
+
+      <Dialog
+        open={open}
+        onClose={handleCancelDelete}
+      >
+        <DialogTitle>Confirm Account Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete your account? This action cannot be undone, and all your data will be permanently removed.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="secondary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

@@ -23,9 +23,9 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <div className='app-container'>
+        
           <NavBar />
-          <div className="content-container">
+          <div className="main-container">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/competitions" element={<Competitions />} />
@@ -43,7 +43,6 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
-        </div>
       </AuthProvider>
     </Router>
   );

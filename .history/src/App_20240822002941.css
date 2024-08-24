@@ -1,0 +1,39 @@
+/* Global styles (e.g., in App.css) */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* Root container to fill the entire screen */
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Main content container that fills the screen */
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Stacks elements vertically */
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Inner content styling */
+.page-content {
+  width: 100%;
+  max-width: 1200px; /* Optional: constrain the width of the content */
+  background-color: #fff; /* Optional: Background color for content */
+  border-radius: 8px; /* Optional: Rounded corners for content */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Optional: Box shadow for content */
+  padding: 20px;
+  box-sizing: border-box;
+}

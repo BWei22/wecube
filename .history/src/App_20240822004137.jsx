@@ -23,9 +23,9 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <div className='app-container'>
+        <div className=''>
           <NavBar />
-          <div className="content-container">
+          <div className="main-container">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/competitions" element={<Competitions />} />

@@ -1,0 +1,56 @@
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+#root {
+  height: 100%;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding-top: 60px; 
+}
+/* App.css */
+
+/* Apply to all container elements in your app */
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Optional: Ensure that the body has no extra margins/padding */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* Ensure that root element takes up the full height */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Set a max-width for content and center it */
+.page-content {
+  max-width: 1200px;
+  width: 100%;
+  margin: auto;
+  background-color: #fff; /* Optional: Background color for content */
+  border-radius: 8px; /* Optional: Rounded corners for content */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Optional: Box shadow for content */
+  padding: 20px;
+}

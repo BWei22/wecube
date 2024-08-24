@@ -102,7 +102,7 @@ const Profile = () => {
 
   return (
     <div className="page-container">
-      <div className="page-content">
+      <div>
         <Box className="profile-container">
           <Typography variant="h4" component="h2" className="profile-header">
             Edit Profile
