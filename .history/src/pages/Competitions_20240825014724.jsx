@@ -33,12 +33,12 @@ const Competitions = () => {
   pastMonthDate.setMonth(currentDate.getMonth() - 1);
 
   const filteredCompetitions = competitions.filter(comp => {
-    const competitionEndDate = new Date(comp.date.till);
-    const competitionStartDate = new Date(comp.date.from);
+    const competitionEndDate = new Date(comp.date.till + "T00:00:00Z"); // Treat the date as UTC
+    const competitionStartDate = new Date(comp.date.from + "T00:00:00Z"); // Treat the date as UTC
     const isUpcoming = competitionStartDate >= currentDate;
     const isRightNow = competitionStartDate <= currentDate && competitionEndDate >= currentDate;
     const isPastMonth = competitionEndDate < currentDate && competitionEndDate >= pastMonthDate;
-
+  
     if (view === "current") {
       return (isUpcoming || isRightNow) && (
         comp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -50,7 +50,7 @@ const Competitions = () => {
         comp.city.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
+  
     return false;
   });
 
@@ -67,27 +67,17 @@ const Competitions = () => {
   };
 
   const formatDateRange = (from, till) => {
-    // Parse the date strings and create Date objects in UTC
-    const fromDate = new Date(`${from}T00:00:00Z`);
-    const tillDate = new Date(`${till}T00:00:00Z`);
+    const fromDate = new Date(from + "T00:00:00Z"); // Adding "T00:00:00Z" to ensure the date is treated as UTC
+    const tillDate = new Date(till + "T00:00:00Z"); // Adding "T00:00:00Z" to ensure the date is treated as UTC
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
   
-    // Options for formatting the dates
-    const options = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
-  
-    // Use Intl.DateTimeFormat to ensure the date is treated as UTC and displayed consistently
-    const fromDateString = new Intl.DateTimeFormat('en-US', options).format(fromDate);
-    const tillDateString = new Intl.DateTimeFormat('en-US', options).format(tillDate);
-  
-    if (fromDateString === tillDateString) {
-      return fromDateString;
+    if (fromDate.toDateString() === tillDate.toDateString()) {
+      return fromDate.toLocaleDateString(undefined, options);
     } else {
-      return `${fromDateString} - ${tillDateString}`;
+      return `${fromDate.toLocaleDateString(undefined, options)} - ${tillDate.toLocaleDateString(undefined, options)}`;
     }
   };
   
-  
-
-
   return (
     <div className="competitions">
       <Button onClick={handleGoBack}>Back</Button>

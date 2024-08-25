@@ -67,26 +67,16 @@ const Competitions = () => {
   };
 
   const formatDateRange = (from, till) => {
-    // Parse the date strings and create Date objects in UTC
-    const fromDate = new Date(`${from}T00:00:00Z`);
-    const tillDate = new Date(`${till}T00:00:00Z`);
-  
-    // Options for formatting the dates
-    const options = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
-  
-    // Use Intl.DateTimeFormat to ensure the date is treated as UTC and displayed consistently
-    const fromDateString = new Intl.DateTimeFormat('en-US', options).format(fromDate);
-    const tillDateString = new Intl.DateTimeFormat('en-US', options).format(tillDate);
-  
-    if (fromDateString === tillDateString) {
-      return fromDateString;
+    const fromDate = new Date(from);
+    const tillDate = new Date(till);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+
+    if (fromDate.toDateString() === tillDate.toDateString()) {
+      return fromDate.toLocaleDateString(undefined, options);
     } else {
-      return `${fromDateString} - ${tillDateString}`;
+      return `${fromDate.toLocaleDateString(undefined, options)} - ${tillDate.toLocaleDateString(undefined, options)}`;
     }
   };
-  
-  
-
 
   return (
     <div className="competitions">
