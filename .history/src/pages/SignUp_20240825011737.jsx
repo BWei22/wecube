@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button, TextField } from '@mui/material';
 import { doc, setDoc } from 'firebase/firestore';
@@ -89,9 +89,9 @@ const SignUp = () => {
       >
         {loading ? 'Signing Up...' : 'Sign Up'}
       </Button>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+      <p style={{ marginTop: '10px' }}>
+        Already have an account? <Link to="/login">Login here</Link>
+      </p
     </div>
   );
 };

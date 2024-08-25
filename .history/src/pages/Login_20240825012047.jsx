@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button, TextField } from '@mui/material';
 import './AuthComponent.css';
@@ -69,9 +69,7 @@ const Login = () => {
       >
         Forgot Password?
       </Button>
-      <p>
-        Don't have an account? <Link to="/signup">Sign up</Link>
-      </p>
+      <p>Don't have an account yet? <Link to="/s">Sign up here</Link></p>
     </div>
   );
 };

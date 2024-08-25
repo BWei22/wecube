@@ -89,8 +89,8 @@ const SignUp = () => {
       >
         {loading ? 'Signing Up...' : 'Sign Up'}
       </Button>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
+      <p style={{ marginTop: '10px' }}>
+        Already have an account? <Link to="/login">Login here</Link>
       </p>
     </div>
   );
