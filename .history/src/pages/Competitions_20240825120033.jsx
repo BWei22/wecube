@@ -69,7 +69,7 @@ const Competitions = () => {
   const formatDateRange = (from, till) => {
     // Parse the date strings and create Date objects in UTC
     const fromDate = new Date(`${from}T00:00:00Z`);
-    const tillDate = new Date(`${till}T23:59:59Z`);
+    const tillDate = new Date(`${till}T00:00:00Z`);
   
     // Options for formatting the dates
     const options = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };

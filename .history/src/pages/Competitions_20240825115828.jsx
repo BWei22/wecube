@@ -33,8 +33,8 @@ const Competitions = () => {
   pastMonthDate.setMonth(currentDate.getMonth() - 1);
 
   const filteredCompetitions = competitions.filter(comp => {
-    const competitionEndDate = new Date(`${comp.date.till}T23:59:59Z`);
-    const competitionStartDate = new Date(`${comp.date.from}T00:00:00Z`);
+    const competitionEndDate = new Date(comp.date.till + );
+    const competitionStartDate = new Date(comp.date.from);
     const isUpcoming = competitionStartDate >= currentDate;
     const isRightNow = competitionStartDate <= currentDate && competitionEndDate >= currentDate;
     const isPastMonth = competitionEndDate < currentDate && competitionEndDate >= pastMonthDate;
@@ -69,7 +69,7 @@ const Competitions = () => {
   const formatDateRange = (from, till) => {
     // Parse the date strings and create Date objects in UTC
     const fromDate = new Date(`${from}T00:00:00Z`);
-    const tillDate = new Date(`${till}T23:59:59Z`);
+    const tillDate = new Date(`${till}T00:00:00Z`);
   
     // Options for formatting the dates
     const options = { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' };
