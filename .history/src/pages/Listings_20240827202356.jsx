@@ -9,11 +9,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import './Listings.css';
+
+import './Listings.css'; 
 
 const puzzleTypes = [
   "3x3", "2x2", "4x4", "5x5", "6x6", "7x7", 
@@ -29,8 +26,6 @@ const Listings = () => {
   const [sortOrder, setSortOrder] = useState('chronological');
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [listingToDelete, setListingToDelete] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedListing, setSelectedListing] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,7 +55,6 @@ const Listings = () => {
   const handleDeleteClick = (id) => {
     setListingToDelete(id);
     setDeleteConfirmationOpen(true);
-    handleMenuClose();
   };
 
   const handleDeleteCancel = () => {
@@ -76,17 +70,6 @@ const Listings = () => {
 
   const handleEdit = (id) => {
     navigate(`/edit-listing/${id}`);
-    handleMenuClose();
-  };
-
-  const handleMenuOpen = (event, listing) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedListing(listing);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedListing(null);
   };
 
   const filteredListings = listings
@@ -106,7 +89,7 @@ const Listings = () => {
 
   const handleCreateListingClick = (competitionId) => {
     navigate(`/create-listing/${competitionId}`);
-  };
+  }
 
   const handleGoBack = () => {
     navigate("/competitions");
@@ -155,33 +138,21 @@ const Listings = () => {
       </Button>
       <div className="listings-grid">
         {filteredListings.map(listing => (
-          <div key={listing.id} className="listing-item">
-            <img src={listing.imageUrl} alt={listing.name} className="listing-image" onClick={() => handleListingClick(listing.id)} />
+          <div key={listing.id} className="listing-item" onClick={() => handleListingClick(listing.id)}>
+            <img src={listing.imageUrl} alt={listing.name} className="listing-image" />
             <div className="listing-info">
-              <span className="listing-name" onClick={() => handleListingClick(listing.id)}>{listing.name}</span>
+              <span className="listing-name">{listing.name}</span>
               <span className="listing-price">${listing.price}</span>
             </div>
             {auth.currentUser && listing.userId === auth.currentUser.uid && (
-              <div className="listing-menu">
-                <IconButton
-                  aria-label="more"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  onClick={(e) => handleMenuOpen(e, listing)}
-                >
-                  <MoreVertIcon />
-                </IconButton>
-                <Menu
-                  id="long-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl && selectedListing?.id === listing.id)}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem onClick={() => handleEdit(listing.id)}>Edit</MenuItem>
-                  <MenuItem onClick={() => handleDeleteClick(listing.id)}>Delete</MenuItem>
-                </Menu>
-              </div>
+              <>
+                <Button variant="contained" color="secondary" onClick={(e) => { e.stopPropagation(); handleDeleteClick(listing.id); }}>
+                  Delete
+                </Button>
+                <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleEdit(listing.id); }}>
+                  Edit
+                </Button>
+              </>
             )}
           </div>
         ))}

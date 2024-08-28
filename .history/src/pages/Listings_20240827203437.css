@@ -11,7 +11,7 @@
   text-align: center;
   cursor: pointer;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  position: relative; /* Important for absolute positioning of the icon */
+  position: relative;
 }
 
 .listing-item:hover {
@@ -21,7 +21,7 @@
 }
 
 .listing-image-container {
-  position: relative; /* Ensure relative positioning for the icon inside the container */
+  position: relative;
 }
 
 .listing-image {
@@ -47,18 +47,11 @@
   color: #007BFF;
 }
 
-.listing-menu {
+.menu-icon {
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 2; /* Ensure the icon appears on top */
-  background-color: rgba(255, 255, 255, 0.8); /* Add a semi-transparent background to the icon */
-  border-radius: 50%;
-  padding: 4px; /* Add some padding around the icon */
-}
-
-.menu-icon {
-  color: #333; /* Adjust the color to match your design */
+  color: white;
 }
 
 button {

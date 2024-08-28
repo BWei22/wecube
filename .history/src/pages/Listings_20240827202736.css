@@ -10,17 +10,20 @@
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .listing-item:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  background-color: #f0f0f0;
 }
 
 .listing-image {
   width: 100%;
   height: 150px;
   object-fit: cover;
+  border-radius: 4px;
 }
 
 .listing-info {
@@ -30,9 +33,15 @@
 .listing-name {
   display: block;
   font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
 }
 
 .listing-price {
   display: block;
   color: #007BFF;
+}
+
+button {
+  margin-top: 8px;
 }

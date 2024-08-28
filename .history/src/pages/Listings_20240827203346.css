@@ -11,17 +11,12 @@
   text-align: center;
   cursor: pointer;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  position: relative; /* Important for absolute positioning of the icon */
 }
 
 .listing-item:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
   background-color: #f0f0f0;
-}
-
-.listing-image-container {
-  position: relative; /* Ensure relative positioning for the icon inside the container */
 }
 
 .listing-image {
@@ -45,20 +40,6 @@
 .listing-price {
   display: block;
   color: #007BFF;
-}
-
-.listing-menu {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2; /* Ensure the icon appears on top */
-  background-color: rgba(255, 255, 255, 0.8); /* Add a semi-transparent background to the icon */
-  border-radius: 50%;
-  padding: 4px; /* Add some padding around the icon */
-}
-
-.menu-icon {
-  color: #333; /* Adjust the color to match your design */
 }
 
 button {
