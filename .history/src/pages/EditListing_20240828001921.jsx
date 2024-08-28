@@ -24,7 +24,6 @@ const EditListing = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [competitionId, setCompetitionId] = useState(''); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +39,6 @@ const EditListing = () => {
           setUsage(listingData.usage);
           setDescription(listingData.description);
           setImageUrl(listingData.imageUrl || '');
-          setCompetitionId(listingData.competitionId); 
         }
       } catch (error) {
         console.error("Error fetching listing:", error);
@@ -98,7 +96,7 @@ const EditListing = () => {
         imageUrl: newImageUrl,
       });
 
-      navigate(`/listings/${competitionId}`);
+      navigate(`/listings/:${competitionId}`);
     } catch (error) {
       console.error("Error updating document: ", error);
       alert("Error updating listing. Please check your permissions and try again.");

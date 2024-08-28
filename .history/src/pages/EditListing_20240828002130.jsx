@@ -40,7 +40,7 @@ const EditListing = () => {
           setUsage(listingData.usage);
           setDescription(listingData.description);
           setImageUrl(listingData.imageUrl || '');
-          setCompetitionId(listingData.competitionId); 
+          setCompetitionId(listingdata.competitionId); 
         }
       } catch (error) {
         console.error("Error fetching listing:", error);

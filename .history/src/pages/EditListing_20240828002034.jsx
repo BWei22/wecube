@@ -24,7 +24,6 @@ const EditListing = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [competitionId, setCompetitionId] = useState(''); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +39,7 @@ const EditListing = () => {
           setUsage(listingData.usage);
           setDescription(listingData.description);
           setImageUrl(listingData.imageUrl || '');
-          setCompetitionId(listingData.competitionId); 
+          setCompetitionId(listingdata.competitionId); 
         }
       } catch (error) {
         console.error("Error fetching listing:", error);
