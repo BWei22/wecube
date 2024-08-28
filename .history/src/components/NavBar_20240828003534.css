@@ -11,6 +11,7 @@
   top: 0;
   left: 0;
   z-index: 1000; /* Ensure the navbar is above all other elements */
+  margin-right: 200px; 
 }
 
 .navbar-left,
@@ -28,7 +29,6 @@
 
 .navbar-right .navbar-username {
   margin-left: 10px;
-  margin-right: 40px;
   font-weight: bold;
 }
 

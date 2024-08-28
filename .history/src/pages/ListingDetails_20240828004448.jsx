@@ -17,17 +17,7 @@ const ListingDetails = () => {
         const docRef = doc(db, 'listings', listingId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const listingData = docSnap.data();
-          setListing(listingData);
-
-          // Fetch the seller's username
-          const userDocRef = doc(db, 'users', listingData.userId);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            setSellerUsername(userDocSnap.data().username);
-          } else {
-            setSellerUsername('Unknown');
-          }
+          setListing(docSnap.data());
         }
       } catch (error) {
         console.error('Error fetching listing:', error);
@@ -86,7 +76,7 @@ const ListingDetails = () => {
         <p>Price: ${listing.price}</p>
         <p>Usage: {listing.usage}</p>
         <p>Description: {listing.description}</p>
-        <p>Seller: {sellerUsername}</p> {/* Display the seller's username */}
+        <p>Seller: {listing.userId}</p>
         {listing.userId !== auth.currentUser?.uid && (
           <Button 
             variant="contained" 
@@ -102,6 +92,7 @@ const ListingDetails = () => {
             Contact the Seller
           </Button>
         )}
+
       </div>
     </div>
   );
